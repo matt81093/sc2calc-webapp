@@ -21,9 +21,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-define("RegexWorker", "((worker|probe|drone|SCV'?)s?)");
+define("RegexWorker", "((worker|probe|drone|SCV|infestedSCV'?)s?)");
 define("RegexDelay", "(\(-?(?P<delay>\d+)\s*s(ec(onds)?)?(\s+lost)?\))");
 define("RegexInitiate", "(\(send\s+". RegexWorker ."?\s*(@|at\s+)(?P<initiate_amount>\d+)\s+(?P<initiate_resource>gas|minerals?)\))");
+
 function RegexProduct($tag = "product") {
 	return "(?P<". $tag .">[0-9a-zA-Z :-]+)";
 }
@@ -303,10 +304,9 @@ class Parser {
 
 			// build
 			} elseif(preg_match("/^(?P<proxy>proxy\s+)?". RegexProduct() ."(?P<priority>\s*!)?\s*". RegexInitiate ."?$/i", $command, $terms)) {
-
 				// create job
 				$product = Product::byName(trim($terms["product"]));
-				if(empty($product)) {
+				if(empty($product)) {	
 					throw_error("Line <i>". ($lineNumber + 1) ."</i> : Unknown command <i>". $command ."</i>",
 						"For a complete list of units, structures, upgrades, morphs and abilities, please refer to <a href=\"list.php\" target=\"_blank\">this list</a>. If you are trying to do something other than building, please check the <i>single line examples</i> for the syntax of the other commands. The syntax is not case-sensitive, but it is very specific in the spelling.");
 				} else {

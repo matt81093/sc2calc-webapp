@@ -40,6 +40,8 @@ function listProducts($type) {
 		echo "Terran ";
 	} elseif($type & Zerg) {
 		echo "Zerg ";
+	} elseif($type & Stukov) {
+		echo "Stukov ";
 	}
 	if($type & Structure) {
 		echo "Structure\n";
@@ -81,4 +83,11 @@ listProducts(Zerg | Morph);
 listProducts(Zerg | Unit);
 listProducts(Zerg | Upgrade);
 listProducts(Zerg | Ability);
+
+// Stukov
+listProducts(Stukov | Structure);	
+listProducts(Stukov | Morph);
+listProducts(Stukov | Unit);
+listProducts(Stukov | Upgrade);
+listProducts(Stukov | Ability);
 ?>

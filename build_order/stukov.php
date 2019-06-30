@@ -22,26 +22,26 @@
  */
 
 /**
- * A hatchery is any structure that produces larvae.
+ * A infestedcc is any structure that produces larvae.
  */
-class Hatchery {
+class InfestedCC {
 
 	/// public members
 
 	/**
-	 * Time when hatchery was completed
+	 * Time when infestedcc was completed
 	 * @var float
 	 */
 	public $created;
 
 	/**
-	 * Initial number of larvae on this hatchery
+	 * Initial number of larvae on this infestedcc
 	 * @var int
 	 */
 	public $initialLarvae;
 
 	/**
-	 * Number of larvae currently on this hatchery
+	 * Number of larvae currently on this infestedcc
 	 * @var int
 	 */
 	public $larvae = 0;
@@ -53,13 +53,13 @@ class Hatchery {
 	public $nextLarvaGenerated;
 
 	/**
-	 * Number that indicates in which order the hatcheries were created
+	 * Number that indicates in which order the infestedccs were created
 	 * @var int
 	 */
 	public $order;
 
 	/**
-	 * Tag to reference this specific hatchery
+	 * Tag to reference this specific infestedcc
 	 * @var string
 	 */
 	public $tag;
@@ -76,8 +76,6 @@ class Hatchery {
 	 */
 	public $vomitExpires = array();
 	
-	public $race;
-	
 	/// private members
 
 	/**
@@ -87,7 +85,7 @@ class Hatchery {
 	private $_generated = array();
 
 	/**
-	 * Time when hatchery was last updated
+	 * Time when infestedcc was last updated
 	 * @var float
 	 */
 	private $_lastUpdated;
@@ -95,12 +93,11 @@ class Hatchery {
 	/// constructor
 
 	/**
-	 * Create new hatchery.
+	 * Create new infestedcc.
 	 * @param float $created
 	 * @param int $initialLarvae
 	 */
-	public function __construct($created, $initialLarvae = 1, $tag = null) {
-		$this->race = $race;
+	public function __construct($created, $initialLarvae = 3, $tag = null) {
 		$this->created = $created;
 		$this->initialLarvae = $initialLarvae;
 		$this->tag = $tag;
@@ -143,11 +140,11 @@ class Hatchery {
 		$this->larvae += $number;
 		$this->larvae = min(19, $this->larvae);
 		if($resetGeneration) {
-			$this->nextLarvaGenerated = $time + LARVA_TIME;
+			$this->nextLarvaGenerated = $time + STUKOV_CC_LARVA_RATE;
 			$this->timeRebate = 0;
-			if(Hatcheries::$debug) tracemsg("Hatcheries[". $this->order ."]::generateLarvae(), at ". simple_time($time) ." we generate a larva. The next larva will be generated at ". simple_time($this->nextLarvaGenerated) .". This hatchery now has ". $this->larvae ." larvae.");
+			if(Hatcheries::$debug) tracemsg("Hatcheries[". $this->order ."]::generateLarvae(), at ". simple_time($time) ." we generate a larva. The next larva will be generated at ". simple_time($this->nextLarvaGenerated) .". This infestedcc now has ". $this->larvae ." larvae.");
 		} elseif($this->larvae > 2) {
-			$this->timeRebate = $time - $this->nextLarvaGenerated + LARVA_TIME;
+			$this->timeRebate = $time - $this->nextLarvaGenerated + STUKOV_CC_LARVA_RATE;
 			if(Hatcheries::$debug) tracemsg("Hatcheries[". $this->order ."]::generateLarvae(), at ". simple_time($time) ." we rise above 2 larvae. The next larva would be generated at ". simple_time($this->nextLarvaGenerated) .", so the rebate is set at ". $this->timeRebate ." seconds.");
 		}
 	}
@@ -179,13 +176,13 @@ class Hatchery {
 	 */
 	public function surplus($time) {
 		if(Hatcheries::$debug) tracemsg("Hatchery::surplus(". simple_time($time) .")");
-		$hatchery = clone $this;
-		$hatchery->update($time, false);
-		return $hatchery->larvae;
+		$infestedcc = clone $this;
+		$infestedcc->update($time, false);
+		return $infestedcc->larvae;
 	}
 
 	/**
-	 * Update the state of this hatchery up to given time.
+	 * Update the state of this infestedcc up to given time.
 	 * @param float $time
 	 * @param bool $debug
 	 */
@@ -215,7 +212,7 @@ class Hatchery {
 	}
 
 	/**
-	 * Queue vomit on this hatchery at the given time.
+	 * Queue vomit on this infestedcc at the given time.
 	 * @global Product $SpawnLarvae
 	 * @param float $time
 	 */
@@ -238,7 +235,7 @@ class Hatchery {
 	}
 
 	/**
-	 * Calculate time when another vomit can be queued on this hatchery.
+	 * Calculate time when another vomit can be queued on this infestedcc.
 	 * @return float
 	 */
 	public function whenVomit() {
@@ -247,9 +244,9 @@ class Hatchery {
 };
 
 /**
- * The set of hatcheries available.
+ * The set of infestedccs available.
  */
-class Hatcheries {
+class InfestedCCs {
 
 	/// class constants
 	const debugFlag = 32;
@@ -265,10 +262,10 @@ class Hatcheries {
 	/// private members
 
 	/**
-	 * List of hatcheries
+	 * List of infestedccs
 	 * @var array
 	 */
-	private $_hatcheries = array();
+	private $_infestedccs = array();
 
 	/**
 	 *
@@ -277,7 +274,7 @@ class Hatcheries {
 	private $_isClone = false;
 
 	/**
-	 * Time when hatcheries were last updated
+	 * Time when infestedccs were last updated
 	 * @var float
 	 */
 	private $_lastUpdated;
@@ -288,11 +285,11 @@ class Hatcheries {
 	 * Create a copy of this.
 	 */
 	public function  __clone() {
-		$hatcheries = array();
-		foreach($this->_hatcheries as $hatchery) {
-			$hatcheries[] = clone $hatchery;
+		$infestedccs = array();
+		foreach($this->_infestedccs as $infestedcc) {
+			$infestedccs[] = clone $infestedcc;
 		}
-		$this->_hatcheries = $hatcheries;
+		$this->_infestedccs = $infestedccs;
 		$this->_isClone = true;
 	}
 
@@ -312,7 +309,7 @@ class Hatcheries {
 				"</tr>".
 			"</thead>".
 			"<tbody>".
-				implode("", $this->_hatcheries) .
+				implode("", $this->_infestedccs) .
 			"</tbody>".
 		"</table>";
 	}
@@ -320,16 +317,16 @@ class Hatcheries {
 	/// public methods
 
 	/**
-	 * Add a hatchery to the list.
-	 * @param Hatchery $hatchery
+	 * Add a infestedcc to the list.
+	 * @param Hatchery $infestedcc
 	 */
-	public function add($hatchery) {
-		$this->_hatcheries[] = $hatchery;
-		$hatchery->order = count($this->_hatcheries);
+	public function add($infestedcc) {
+		$this->_infestedccs[] = $infestedcc;
+		$infestedcc->order = count($this->_infestedccs);
 	}
 
 	/**
-	 * Use up a single larva from any hatchery that has one available and that
+	 * Use up a single larva from any infestedcc that has one available and that
 	 * has the required tags at the given time.
 	 * @param float $time
 	 * @param int $larvae
@@ -342,29 +339,29 @@ class Hatcheries {
 		$this->update($time);
 		for($i = 0; $i < $larvae; $i++) {
 
-			// choose hatchery
-			foreach($this->select($tagsRequired) as $hatchery) {
-				if(self::$debug) tracemsg(($this->_isClone ? "lon " : "") ."Hatcheries::expend(), hatchery created at ". simple_time($hatchery->created) ." has ". $hatchery->larvae ." larvae.");
-				if($hatchery->larvae > 0 && $hatchery->created <= $time) {
+			// choose infestedcc
+			foreach($this->select($tagsRequired) as $infestedcc) {
+				if(self::$debug) tracemsg(($this->_isClone ? "lon " : "") ."Hatcheries::expend(), infestedcc created at ". simple_time($infestedcc->created) ." has ". $infestedcc->larvae ." larvae.");
+				if($infestedcc->larvae > 0 && $infestedcc->created <= $time) {
 					if(!isset($candidate)) {
-						$candidate = $hatchery;
-					} elseif($hatchery->larvae > $candidate->larvae) {
-						$candidate = $hatchery;
-					} elseif($hatchery->larvae == $candidate->larvae && $hatchery->nextVomit() < $candidate->nextVomit()) {
-						$candidate = $hatchery;
-					} elseif($hatchery->larvae == $candidate->larvae && $hatchery->nextVomit() == $candidate->nextVomit() && $hatchery->nextLarvaGenerated < $candidate->nextLarvaGenerated) {
-						$candidate = $hatchery;
+						$candidate = $infestedcc;
+					} elseif($infestedcc->larvae > $candidate->larvae) {
+						$candidate = $infestedcc;
+					} elseif($infestedcc->larvae == $candidate->larvae && $infestedcc->nextVomit() < $candidate->nextVomit()) {
+						$candidate = $infestedcc;
+					} elseif($infestedcc->larvae == $candidate->larvae && $infestedcc->nextVomit() == $candidate->nextVomit() && $infestedcc->nextLarvaGenerated < $candidate->nextLarvaGenerated) {
+						$candidate = $infestedcc;
 					}
 				}
 			}
 			if(!isset($candidate)) {
-				throw_error("No hatcheries have larvae available at ". simple_time($time) .".",
+				throw_error("No infestedccs have larvae available at ". simple_time($time) .".",
 					"This error message should not occur. Please report this message with your build order on the thread linked at bottom of the page.");
 			}
 
 			// reset time next larva is generated
 			if($candidate->larvae == 3) {
-				$candidate->nextLarvaGenerated = $time + LARVA_TIME - $candidate->timeRebate;
+				$candidate->nextLarvaGenerated = $time + STUKOV_CC_LARVA_RATE - $candidate->timeRebate;
 				if(self::$debug) tracemsg(($this->_isClone ? "lon " : "") ."Hatcheries::expend(), at ". simple_time($time) ." we drop below 3 larvae. The rebate is ". $candidate->timeRebate ." seconds, so the next larva is generated at ". simple_time($candidate->nextLarvaGenerated));
 			}
 
@@ -377,22 +374,22 @@ class Hatcheries {
 	}
 
 	/**
-	 * Find all hatcheries with one of the given tags.
+	 * Find all infestedccs with one of the given tags.
 	 * @param string $tagsRequired
-	 * @return array Array of references to the hatcheries
+	 * @return array Array of references to the infestedccs
 	 */
 	public function select($tagsRequired = null) {
-		$hatcheries = array();
-		foreach($this->_hatcheries as $hatchery) {
-			if($tagsRequired === null || (isset($hatchery->tag) && in_array($hatchery->tag, $tagsRequired))) {
-				$hatcheries[] = $hatchery;
+		$infestedccs = array();
+		foreach($this->_infestedccs as $infestedcc) {
+			if($tagsRequired === null || (isset($infestedcc->tag) && in_array($infestedcc->tag, $tagsRequired))) {
+				$infestedccs[] = $infestedcc;
 			}
 		}
-		return $hatcheries;
+		return $infestedccs;
 	}
 
 	/**
-	 * Calculate surplus numbers of larvae on all hatcheries that have the
+	 * Calculate surplus numbers of larvae on all infestedccs that have the
 	 * required tags at a given time in the future.
 	 * @param float $time
 	 * @param array $tagsRequired
@@ -400,16 +397,16 @@ class Hatcheries {
 	 */
 	public function surplus($time, $tagsRequired = null) {
 		$larvae = array();
-		foreach($this->select($tagsRequired) as $hatchery) {
-			if($hatchery->created <= $time) {
-				$larvae[] = $hatchery->surplus($time);
+		foreach($this->select($tagsRequired) as $infestedcc) {
+			if($infestedcc->created <= $time) {
+				$larvae[] = $infestedcc->surplus($time);
 			}
 		}
 		return $larvae;
 	}
 
 	/**
-	 * Update the state of all hatcheries up to given time.
+	 * Update the state of all infestedccs up to given time.
 	 * @param float $time
 	 */
 	public function update($time) {
@@ -421,8 +418,8 @@ class Hatcheries {
 		}
 		
 		// generate larvae
-		foreach($this->_hatcheries as $hatchery) {
-			$hatchery->update($time, self::$debug);
+		foreach($this->_infestedccs as $infestedcc) {
+			$infestedcc->update($time, self::$debug);
 		}
 
 		$this->_lastUpdated = $time;
@@ -434,24 +431,24 @@ class Hatcheries {
 	 */
 	public function vomit($time) {
 
-		// choose hatchery
-		foreach($this->_hatcheries as $hatchery) {
-			if($hatchery->created <= $time) {
+		// choose infestedcc
+		foreach($this->_infestedccs as $infestedcc) {
+			if($infestedcc->created <= $time) {
 				if(!isset($candidate)) {
-					$candidate = $hatchery;
-				} elseif($hatchery->whenVomit() < $candidate->whenVomit()) {
-					$candidate = $hatchery;
+					$candidate = $infestedcc;
+				} elseif($infestedcc->whenVomit() < $candidate->whenVomit()) {
+					$candidate = $infestedcc;
 				}
 			}
 		}
 
 		// queue vomit
-		if(self::$debug) tracemsg(($this->_isClone ? "lon " : "") ."Hatcheries::vomit(), vomitting to hatchery created at ". simple_time($candidate->created));
+		if(self::$debug) tracemsg(($this->_isClone ? "lon " : "") ."Hatcheries::vomit(), vomitting to infestedcc created at ". simple_time($candidate->created));
 		$candidate->vomit($time);
 	}
 
 	/**
-	 * Calculate time when hatcheries with the required tags has the given
+	 * Calculate time when infestedccs with the required tags has the given
 	 * number of free larva.
 	 * @param int $larvae
 	 * @param array $tagsRequired
@@ -460,15 +457,15 @@ class Hatcheries {
 	public function when($larvae, $tagsRequired = null) {
 		$time = INF;
 		if($larvae == 1) {
-			foreach($this->select($tagsRequired) as $hatchery) {
-				if(self::$debug) tracemsg(($this->_isClone ? "lon " : "") ."Hatcheries[". $hatchery->order ."]::when()=". simple_time($hatchery->when()) .", has ". $hatchery->larvae ." larvae.");
-				$time = min($time, $hatchery->when());
+			foreach($this->select($tagsRequired) as $infestedcc) {
+				if(self::$debug) tracemsg(($this->_isClone ? "lon " : "") ."Hatcheries[". $infestedcc->order ."]::when()=". simple_time($infestedcc->when()) .", has ". $infestedcc->larvae ." larvae.");
+				$time = min($time, $infestedcc->when());
 			}
 		} else {
-			$hatcheries = clone $this;
+			$infestedccs = clone $this;
 			for($i = 0; $i < $larvae; $i++) {
-				$time = $hatcheries->when(1, $tagsRequired);
-				$hatcheries->expend($time, 1, $tagsRequired);
+				$time = $infestedccs->when(1, $tagsRequired);
+				$infestedccs->expend($time, 1, $tagsRequired);
 			}
 		}
 		if(self::$debug) tracemsg(($this->_isClone ? "lon " : "") ."Hatcheries::when(), returns ". $time);
@@ -476,13 +473,13 @@ class Hatcheries {
 	}
 
 	/**
-	 * Calculate time when another vomit can be queued on any hatchery.
+	 * Calculate time when another vomit can be queued on any infestedcc.
 	 * @return float
 	 */
 	public function whenVomit() {
 		$time = INF;
-		foreach($this->_hatcheries as $hatchery) {
-			$time = min($time, $hatchery->whenVomit());
+		foreach($this->_infestedccs as $infestedcc) {
+			$time = min($time, $infestedcc->whenVomit());
 		}
 		if(self::$debug) tracemsg(($this->_isClone ? "lon " : "") ."Hatcheries::whenVomit(), returns ". simple_time($time));
 		return $time;

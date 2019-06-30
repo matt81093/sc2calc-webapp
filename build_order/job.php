@@ -90,7 +90,7 @@ class Availability {
 	 * Create new availability.
 	 * @param string $status
 	 */
-	public function  __construct($status) {
+	public function __construct($status) {
 		$this->status = $status;
 	}
 
@@ -100,7 +100,7 @@ class Availability {
 	 * Convert this to string.
 	 * @return string
 	 */
-	public function  __tostring() {
+	public function __tostring() {
 		switch($this->status) {
 			case Availability::Available:
 				return "";
@@ -654,7 +654,7 @@ class BuildJob extends Job {
 	}
 
 	public function description() {
-		if($this->_product->type & Ability) {
+		if($this->_product['$type'] & Ability) {
 			return "<em>". (string)$this->_product ."</em>";
 		} else {
 			return (string)$this->_product;
@@ -696,16 +696,24 @@ class BuildJob extends Job {
 			$travelTime = $this->timeStarted - $this->timeInitiated;
 
 			// when does worker return
-			switch($this->_product->type & (Protoss | Terran | Zerg)) {
-			case Protoss:
-				$workerReturns = $this->timeStarted + $travelTime;
-				break;
-			case Terran:
-				$workerReturns = $this->timeCompleted + $travelTime;
-				break;
-			case Zerg:
-				$workerReturns = INF;
-				break;
+			if (isset($this->_product->commander)) {
+				switch($this->_product->commander & (Stukov)) {
+					case Stukov:
+					$workerReturns = $this->timeCompleted + $travelTime;
+					break;
+				}
+			} else {
+				switch($this->_product->race & (Protoss | Terran | Zerg)) {
+					case Protoss:
+						$workerReturns = $this->timeStarted + $travelTime;
+						break;
+					case Terran:
+						$workerReturns = $this->timeCompleted + $travelTime;
+						break;
+					case Zerg:
+						$workerReturns = INF;
+						break;
+				}
 			}
 
 			// splice income
@@ -762,6 +770,10 @@ class BuildJob extends Job {
 
 	public function race() {
 		return $this->_product->race();
+	}
+	
+	public function commander() {
+		return $this->_product->commander();
 	}
 
 	public function spellcasterTypeExpended() {
@@ -867,7 +879,7 @@ class MutateJob extends Job {
 class ScoutJob extends MutateJob {
 
 	/// constructor
-	public function  __construct($delay = 0) {
+	public function __construct($delay = 0) {
 		$mutation = new ScoutMutation();
 		$mutation->delay = $delay;
 		parent::__construct($mutation);

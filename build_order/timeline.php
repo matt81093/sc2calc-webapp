@@ -199,6 +199,8 @@ class Timeline {
 	 * @var Hatcheries
 	 */
 	public $hatcheries;
+	
+	public $infestedccs;
 
 	/**
 	 * List of current income slots.
@@ -254,11 +256,12 @@ class Timeline {
 		$this->race = $race;
 		$this->farms = new Farms();
 		$this->hatcheries = new Hatcheries();
+		$this->infestedccs = new InfestedCCs();
 		$this->income = new IncomeSlots();
 		$this->queues = new ProductionQueues();
 		$this->spellcasters = new Spellcasters();
 	}
-
+	
 	/// operators
 
 	/**
@@ -274,6 +277,7 @@ class Timeline {
 					"<th>Completed</th>".
 					"<th>Supply</th>".
 					($this->race == Zerg ? "<th>Larvae</th>" : "") .
+					($this->race == Stukov ? "<th>Charges</th>" : "") .
 					"<th>Object</th>".
 					"<th>Minerals</th>".
 					"<th>Gas</th>".
@@ -302,7 +306,7 @@ class Timeline {
 	 * @param Job $job
 	 * @return int
 	 */
-	public function calculate($job, $scheduledJobs) {
+	public function calculate($job, $scheduledJobs) {		
 		global $SpawnLarvae;
 		Logger::enter("Timeline::calculate");
 		
@@ -392,9 +396,12 @@ class Timeline {
 			}
 		}
 		
-		// when is larva available
-		if($job->larvaCost() > 0) {
+		if ($job->larvaCost() > 0 && $this->$_product->$type=="Stukov") {
+			$job->timeStarted = max($job->timeStarted, $this->infestedccs->when($job->larvaCost(), $job->tagsRequired));
+		} elseif ($job->larvaCost() > 0 && $race=="Zerg") {
 			$job->timeStarted = max($job->timeStarted, $this->hatcheries->when($job->larvaCost(), $job->tagsRequired));
+		}
+		if ($job->larvaCost() > 0) {
 			if($this->debug) tracemsg("Timeline::calculate(), larva available at ". simple_time($job->timeStarted));
 			if($job->timeStarted === INF) {
 				$job->availability = new Availability(Availability::NoLarvaProduction);
@@ -437,7 +444,11 @@ class Timeline {
 		// for spawn larvae, delay until a hatchery is vomit-free
 		$productsCreated = $job->productsCreated();
 		if($productsCreated !== null && count($productsCreated) > 0 && $productsCreated[0]->uid == $SpawnLarvae->uid) {
+			if($race == "Stukov") {
+			$job->timeStarted = max($job->timeStarted, $this->infestedccs->whenVomit());				
+			} else {
 			$job->timeStarted = max($job->timeStarted, $this->hatcheries->whenVomit());
+			}
 		}
 
 		// delay transferring workers to gas until there is room for them
@@ -486,8 +497,13 @@ class Timeline {
 	 * @return bool
 	 */
 	public function canAccommodate($job, $fixedJob) {
-		if($this->debug || Hatcheries::$debug) tracemsg ("Timeline::canAccommodate(". $job .", ". $fixedJob .")");
-
+		$job->race = $race;
+		
+		if ($race == "Stukov") {
+			if($this->debug || Hatcheries::$debug) tracemsg ("Timeline::canAccommodate(". $job .", ". $fixedJob .")");
+		} else {
+			if($this->debug || Hatcheries::$debug) tracemsg ("Timeline::canAccommodate(". $job .", ". $fixedJob .")");
+		}
 		// only jobs that could clash
 		if($job->larvaCost() == 0 && $job->energyCost() == 0 && $job->queueTypesExpended() === null) {
 			return true;
@@ -498,18 +514,25 @@ class Timeline {
 
 		// remember previous queues & spellcasters state
 		$holdHatcheries = $this->hatcheries;
+		$holdInfestedCCs = $this->infestedccs;
 		$holdQueues = $this->queues;
 		$holdSpellcasters = $this->spellcasters;
 		$this->hatcheries = clone $this->hatcheries;
+		$this->infestedccs = clone $this->infestedccs;
 		$this->queues = clone $this->queues;
 		$this->spellcasters = clone $this->spellcasters;
 
 		// can we use larvae without delaying fixed job?
-		if($job->larvaCost() > 0) {
+		if ($job->larvaCost() > 0 && $race == "Stukov") {
+			$this->infestedccs->expend($job->timeStarted, $job->larvaCost(), $job->tagsRequired);
+		} elseif ($job->larvaCost() > 0) {
 			$this->hatcheries->expend($job->timeStarted, $job->larvaCost(), $job->tagsRequired);
 		}
-		if($fixedJob->larvaCost() > 0) {
-			$larvaeAvailable = $this->hatcheries->when($fixedJob->larvaCost(), $fixedJob->tagsRequired);
+		
+		if($fixedJob->larvaCost() > 0 && $race == "Stukov") {
+			$larvaeAvailable = $this->infestedccs->when($fixedJob->larvaCost(), $fixedJob->tagsRequired);
+		} elseif ($fixedJob->larvaCost() > 0) {
+			$larvaeAvailable = $this->hatcheries->when($fixedJob->larvaCost(), $fixedJob->tagsRequired);		
 		} else {
 			$larvaeAvailable = -INF;
 		}
@@ -536,6 +559,7 @@ class Timeline {
 
 		// reinstate remembered queues & spellcasters state
 		$this->hatcheries = $holdHatcheries;
+		$this->infestedccs = $holdInfestedCCS;
 		$this->queues = $holdQueues;
 		$this->spellcasters = $holdSpellcasters;
 
@@ -561,6 +585,7 @@ class Timeline {
 		}
 		list($event->gasSurplus, $event->mineralSurplus) = $this->income->surplus($timeStarted);
 		$event->larvae = $this->hatcheries->surplus($timeStarted);
+		$event->larvae = $this->infestedccs->surplus($timeStarted);
 		$event->order = count($this->_events);
 		//tracemsg("Logging ". $description .", supply capacity is ". $this->farms->surplus($timeStarted) ." at ". simple_time($timeStarted));
 		$event->supplyCapacity = $this->farms->surplus($timeStarted);
@@ -584,6 +609,7 @@ class Timeline {
 		global $SpawnLarvae, $Warpgate, $ScoutingWorker;
 		Logger::enter("Timeline::process");
 		if($this->debug || Hatcheries::$debug) tracemsg("Timeline::process(". $job .", ". ($intheFuture ? "true": "false") .")");
+		if($this->debug || InfestedCCs::$debug) tracemsg("Timeline::process(". $job .", ". ($intheFuture ? "true": "false") .")");
 
 		// reset time completed
 		$job->timeCompleted = INF;
@@ -636,6 +662,7 @@ class Timeline {
 		// use larva
 		if($job->larvaCost() > 0) {
 			$this->hatcheries->expend($job->timeStarted, $job->larvaCost(), $job->tagsRequired);
+			$this->infestedccs->expend($job->timeStarted, $job->larvaCost(), $job->tagsRequired);
 		}
 
 		// new products
@@ -646,13 +673,16 @@ class Timeline {
 					// spawn larvae
 					if($product->uid == $SpawnLarvae->uid) {
 						$this->hatcheries->vomit($job->timeStarted);
+						$this->infestedccs->vomit($job->timeStarted);
 					}
 
 					// new hatchery
 					if(($product->type & Base) && ($product->type & Zerg)) {
 						$this->hatcheries->add(new Hatchery($job->timeCompleted, 1, $job->tag));
 					}
-
+					if(($product->type & Base) && ($product->type & Stukov)) {
+						$this->infestedccs->add(new InfestedCC($job->timeCompleted, 1, $job->tag));
+					}
 					// new spellcaster
 					if($product->type & Spellcaster) {
 						$this->spellcasters->add(new Spellcaster($product, $job->timeCompleted, $job->tag));
