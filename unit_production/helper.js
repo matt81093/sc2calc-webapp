@@ -160,3 +160,30 @@ var ZergUnits = [
 	Queen, Zergling, Baneling, Roach,
 	Overseer, Hydralisk, Mutalisk, Corruptor, Infestor,
 	BroodLord, Ultralisk];
+
+
+ // Stukov
+ 
+var InfestedSCV		= new Unit("Infested SCV"		, 1,  50,   0,   17, null,    1);
+var InfestedCiv 	= new Unit("Infested Civilian" 	, 0,   0,   0,   60, null,    0);
+var InfestedVol 	= new Unit("Infested Volatile" 	, 0,   0,   0,   60, null,    0);
+var InfestedMarine 	= new Unit("Infested Marine"	, 1,  25,   0,    5, null,    1);
+var InfestedTerran 	= new Unit("Infested Terran"	, 0,   0,   0,   24, null,    0);
+var InfestedDback	= new Unit("Infested Diamonback", 3, 225, 100,   33, null,    1);
+var InfestedStank	= new Unit("Infested Siege Tank", 3, 200, 100,   33, null,    1);
+var InfestedLib		= new Unit("Infested Liberator"	, 3, 150, 150,   43, null,    1);
+var InfestedBanshee	= new Unit("Infested Banshee"	, 3, 150, 100,   43, null,    1);
+var InfestedQueen	= new Unit("Brood Queen"		, 2, 100, 100,   32, null,    1);
+
+
+var InfestedCommandCenter		= new Structure("Infested Command Center"		, [InfestedSCV, Overlord], 3);
+var InfestedColonistCompound	= new Structure("Infested Colonist Compound"	, [InfestedCiv, InfestedVol]);
+var Infested
+
+ 
+ var StukovUnits = [
+	InfestedSCV, Overlord,
+	Infested Civ, InfestedVol, InfestedTerran, InfestedMarine,
+	InfestedDback, InfestedStank,
+	InfestedLib, InfestedBanshee,
+	InfestedQueen, Overseer];

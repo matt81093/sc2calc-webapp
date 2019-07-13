@@ -1,9 +1,26 @@
 <?php
 
+	require('./helper.php');
+
 	// Terran Structures
 	
 	$TerranStructures = [
-		'$CommandCenter' => [
+		'CommandCenter' => '{
+			"race": "Terran",
+			"commander": null,
+			"name": "Command Center",
+			"type": "Structure | Base | Farm",
+			"mineralCost": 400,
+			"gasCost": 0,
+			"buildTime": 100,
+			"prerequisites": null,
+			"supplyCapacity": 11
+		}'
+	];
+	
+	/*
+	$TerranStructures = [
+		'$CommandCenter' = (object) [
 			'$race' => Terran,
 			'$commander' => null,
 			'$name' => "Command Center",
@@ -1593,7 +1610,7 @@
 			'$spellCooldown' => 12,
 		],
 	];
-
 	$validTerran = array_merge($TerranStructures, $TerranUnits, $TerranUpgrades, $TerranAbilities, $TerranMorphs);
-
+	*/
+	$validTerran = $TerranStructures;
 ?>
