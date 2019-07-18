@@ -32,17 +32,24 @@ header("Content-type: text/plain");
  * Render all products of the given type.
  * @param int $type
  */
-function listProducts($type) {
+function listProducts($race, $type) {
 	echo "# ";
-	if($type & Protoss) {
-		echo "Protoss ";
-	} elseif($type & Terran) {
-		echo "Terran ";
-	} elseif($type & Zerg) {
-		echo "Zerg ";
-	} elseif($type & Stukov) {
-		echo "Stukov ";
+	
+	switch ($race) {
+		case $race === Stukov:
+			echo "Stukov ";
+			break;
+		case $race === Terran:
+			echo "Terran ";
+			break;
+		case $race === Zerg:
+			echo "Zerg ";
+			break;
+		case $race === Protoss:
+			echo "Protoss ";
+			break;
 	}
+	
 	if($type & Structure) {
 		echo "Structure\n";
 	} elseif($type & Unit) {
@@ -55,39 +62,50 @@ function listProducts($type) {
 		echo "Ability\n";
 	}
 	
+	$product = Product::$all;
+	$count = count(Product::$all);
+	for($candidate = 0; $candidate < $count; ++$candidate) {
+		if (($product[$candidate]->type & $type) === $type && !empty($product[$candidate]->name) && $product[$candidate]->race === $race) {
+			echo $product[$candidate] ."\n";
+		}
+	}
+	unset($product); unset($count);
+	echo "\n";
+	/*
 	foreach(Product::$all as $product) {
 		if(($product->type & $type) == $type && !empty($product->name)) {
 			echo $product ."\n";
 		}
 	}
-	echo "\n";
+	echo "\n"; */
 }
 
-// Protoss
-listProducts(Protoss | Structure);	
-listProducts(Protoss | Morph);
-listProducts(Protoss | Unit);
-listProducts(Protoss | Upgrade);
-listProducts(Protoss | Ability);
-
 // Terran
-listProducts(Terran | Structure);	
-listProducts(Terran | Morph);
-listProducts(Terran | Unit);
-listProducts(Terran | Upgrade);
-listProducts(Terran | Ability);
+listProducts(Terran, Structure);	
+listProducts(Terran, Morph);
+listProducts(Terran, Unit);
+listProducts(Terran, Upgrade);
+listProducts(Terran, Ability);
 
 // Zerg
-listProducts(Zerg | Structure);	
-listProducts(Zerg | Morph);
-listProducts(Zerg | Unit);
-listProducts(Zerg | Upgrade);
-listProducts(Zerg | Ability);
+listProducts(Zerg, Structure);	
+listProducts(Zerg, Morph);
+listProducts(Zerg, Unit);
+listProducts(Zerg, Upgrade);
+listProducts(Zerg, Ability);
 
+// Protoss
+listProducts(Protoss, Structure);	
+listProducts(Protoss, Morph);
+listProducts(Protoss, Unit);
+listProducts(Protoss, Upgrade);
+listProducts(Protoss, Ability);
+
+echo "### COMMANDERS: ### \n \n";
 // Stukov
-listProducts(Stukov | Structure);	
-listProducts(Stukov | Morph);
-listProducts(Stukov | Unit);
-listProducts(Stukov | Upgrade);
-listProducts(Stukov | Ability);
+listProducts(Stukov, Structure);	
+listProducts(Stukov, Morph);
+listProducts(Stukov, Unit);
+listProducts(Stukov, Upgrade);
+listProducts(Stukov, Ability);
 ?>

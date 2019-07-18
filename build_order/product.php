@@ -12,6 +12,7 @@ require './commanders/protoss.php';
 class Product {
 
 	private static $_designated = array();
+	// @var array | List of designated products for specific types.
 	
 	public static $all = array();
 	// @var array | List of all exposed products.
@@ -19,70 +20,67 @@ class Product {
 	private static $last_uid = 0;
 	// @var int | Last unique identifier created.
 	
-	public $energyCost;
+	public $exposed = true;
+	// @var bool | Decides whether to show this product in build log.
+	
+	public $energyCost = 0.0;
 	// @var float | Energy cost of this product.
 
-	public $energyMax;
+	public $energyMax = 0.0;
 	// @ var float | Maximum energy on this spellcaster.
 	
-	public $energyStart;
+	public $energyStart = 0.0;
 	// @var float | Initial energy on this spellcaster.
 	 
-	public $expends;
+	public $expends = array();
 	// @var array | Production queues expended to build this product.
 
-	public $expendsAll;
+	public $expendsAll = false;
 	// @var bool | If true, all production queues are required; if false, only one of them.
 	
-	public $mineralCost;
+	public $mineralCost = 0.0;
 	// @var float | Mineral cost of this product.
 	
-	public $gasCost;
+	public $gasCost = 0.0;
 	// @var float | Gas cost of this product.
 
-	public $larvaCost;
+	public $larvaCost = 0;
 	// @var int | Larva cost of this product.
 	
-	public $name;
+	public $name = "Placeholder";
 	// @var string | Name of this product.
 	
-	public $prerequisites;
+	public $prerequisites = array();
 	// @var array | Prerequisite structures or upgrades to build this product.
 
-	public $spellcaster;
-	// @var Product | Type of spellcaster needed to use this ability.
+	public $spellcaster = array();
+	// @var Array of Product | Type of spellcaster needed to use this ability.
 
-	public $supplyCapacity;
+	public $supplyCapacity = 0;
 	// @var int | Supply capacity provided by this product.
 	
-	public $supplyCost;
+	public $supplyCost = 0;
 	// @var int | Supply cost of this product.
 
-	public $spellCooldown;
+	public $spellCooldown = 0;
+	// @var int | Time until Ability can be used again.
 	
-	public $buildTime;
-	
-	public $timeCost;
+	public $timeCost = 0.0;
 	// @var float | Time it takes to complete this product.
 
-	public $race;
-	//@var int | Race of product.
+	public $race = 0;
+	//@var int | Race of this product.
 
-	public $commander;
-	// @var int | Commander of product.
-
-	public $type;
-	// @var int | Type of product.
+	public $type = 0;
+	// @var int | Type of this product.
 
 	public $uid;
 	// @var int | Unique identifier of this product.
 
-	public $transformation_to;
+	public $yeilds = array();
 	// @var array | For a morph, a list of products that are yielded by the morph.
 
-	/// constructor
-
-	/**
+	/** /// constructor
 	 * Create a new product.
 	 * @param string $name
 	 * @param int $type
@@ -97,124 +95,98 @@ class Product {
 	
 	public function __construct($Product, $exposed = true) { 
 
-		if (empty($Product)) { //|| !is_array($Product)) {
-			throw_error("This object is empty. Please report to webmaster.");
+		if (empty($Product)) {
+			throw_error("Attempted to construct empty object.");
 		} else {
-			$this->race = Helper::toRace($Product->race);
-			$this->commander = $Product->commander;
+			$this->race = (Helper::toRace($Product->race));
 			$this->name = $Product->name;
-			$this->type = (Helper::toType($Product->type));
-			
-			if(count($Product->prerequisites) !== 0) {
-				foreach($Product->prerequisites as $candidate) {
-					$candidate = new $candidate;
-					// unset($candidate);
-				}
-			} else {
-				$this->prerequisites = $Product->prerequisites;
-			}
-			
-			$this->expendsAll = true;
-			
-			if (isset($Product->buildTime)) {
-				$this->timeCost = $Product->buildTime;
-			}
-			
-			if(isset($Product->mineralCost)) {	
-				$this->mineralCost = $Product->mineralCost;
-			}
-			
-			if(isset($Product->gasCost)) {
-				$this->gasCost = $Product->gasCost;	
-			}
-			
-			// Type checking and assigning values.
-			
-			if ($this->type & Morph | Unit) {
-				if(isset($Product->supplyCost)) {
-					$this->supplyCost = $Product->supplyCost;
-				}
-			}
-			
-			if (($this->type & Structure) && ($this->race & Zerg)) {
-				$this->supplyCost = -1;
-			}
+			$this->prerequisites = (Helper::sortToArray($Product->prerequisites));
+			$this->timeCost = $Product->timeCost;
+			$this->mineralCost = $Product->mineralCost;
+			$this->gasCost = $Product->gasCost;
+			$expendsAll = false;
 
-			if ($this->type & Farm) {
-				if(isset($Product->supplyCapacity)) {
-					$this->supplyCapacity = $Product->supplyCapacity;
-				}
-			}
+			// Type checking and assigning values.
+			// for loop with switches? can test out and keep
+			// unknown if I can move this to function
 			
-			if ($this->type & (Upgrade | Morph | Unit)) {
-				if(isset($Product->expends)) {
-					$this->expends = $Product->expends;
+			$types = explode(" | ", $Product->type);
+			$count = count($types);
+			for($strings = 0; $strings < $count; ++$strings) {
+				$type = $types[$strings];
+				switch ($type) {
+					case $type === "Unit":
+						$this->type |= Unit;
+						$this->expends = (Helper::sortToArray($Product->expends));
+						$this->supplyCost = $Product->supplyCost;
+						$this->race & Zerg ? $this->larvaCost = 1 : 0;
+						continue;
+					case $type === "Structure":
+						$this->type |= Structure;
+						$this->race & Zerg ? $this->supplyCost = -1 : null;
+						continue;
+					case $type === "Upgrade":
+						$this->type |= Upgrade;
+						$this->expends = (Helper::sortToArray($Product->expends));
+						continue;
+					case $type === "Morph":
+						$this->type |= Morph;
+						$this->expends = (Helper::sortToArray($Product->expends));
+						$this->supplyCost = $Product->supplyCost;
+						$this->yeilds = (Helper::sortToArray($Product->yeilds));
+						$this->expendsAll = true;
+						continue;
+					case $type === "Ability":
+						$this->type |= Ability;
+						$this->spellCaster = (Helper::sortToArray($Product->spellCaster));
+						$this->energyCost = $Product->energyCost;
+						$this->spellCooldown = $Product->spellCooldown;
+						continue;
+					case $type === "Spellcaster":
+						$this->type |= Spellcaster;
+						$this->energyStart = $Product->energyStart;
+						$this->energyMax = $Product->energyMax;
+						continue;
+					// Special types
+					case $type === "Base":
+						$this->type |= Base;
+						$_setType = Base | $this->race;
+						Product::$_designated[$_setType] = &$this;
+						unset($_setType); continue;
+					case $type === "Worker":
+						$this->type |= Worker;
+						$_setType = Worker | $this->race;
+						Product::$_designated[$_setType] = &$this;
+						continue;
+					case $type === "Geyser":
+						$this->type |= Geyser;
+						$_setType = Geyser | $this->race;
+						Product::$_designated[$_setType] = &$this;
+						continue;
+					case $type === "Booster":
+						$this->type |= Booster;
+						$_setType = Booster | $this->race;
+						Product::$_designated[$_setType] = &$this;
+						continue;
+					case $type === "Farm":
+						$this->type |= Farm;
+						// $_designated[$type] = $this;
+						$this->supplyCapacity = $Product->supplyCapacity;
+						continue;
 				}
 			}
-		
-			if ($this->type & Morph) {
-				if(isset($Product->yeilds)) {
-					$this->yeilds = $Product->yeilds;
-				}
-			}
-		
-			if($this->type & Spellcaster) {
-				if(isset($Product->energyStart)) {
-					$this->energyStart = $Product->energyStart;
-				}
-				if(isset($Product->energyMax)) {
-					$this->energyMax = $Product->energyMax;
-				}
-			}
-		
-			if($this->type & Ability) {
-				if(isset($Product->spellCaster)) {
-					$this->spellCaster = $Product->spellCaster;
-				}
-				if(isset($Product->energyCost)) {
-					$this->energyCost = $Product->energyCost;
-				}
-				if(isset($Product->spellCooldown)) {
-					$this->spellCooldown = $Product->spellCooldown;
-				}
-			}
+			unset($types); unset($count);
 			
-			$this->larvaCost = (($this->race & Zerg) && ($this->type & Unit)) ? 1 : 0;
-			
-			if(($this->race & Zerg) && ($this->type & Structure)) {
-				$this->supplyCost = -1;
-			}
+			// $this->larvaCost = (($this->race & Zerg) && ($this->type & Unit)) ? 1 : 0;
 			
 			// set uid & append to all
 			$this->uid = Product::$last_uid++;
 			if($exposed) {
 				Product::$all[] = $this;
 			}
-			
-			/*
-			// Designate product type to array
-			if($this->type & (Base | Worker | Farm) {
-				$type = $this->type;
-				Product::$_designated[$type] = $this;
-				unset($type);
-			} */
 		}
 	}
 	
-	// assigning prerequisites and expends as objects
-	/*
-	public function assignPrerequisites() {
-		foreach(Product::$all as $candidate) {
-			$prerequisites = $candidate->prerequisites;
-			for () {
-				
-			}
-			if($candidate == $prerequisites)
-		}
-	}
-	*/
-			
-
 	/**
 	 * When a product is unset
 	 */
@@ -225,6 +197,10 @@ class Product {
 				break;
 			}
 		}
+	}
+	
+	public function race() {
+		return $this->race & (Protoss | Terran | Zerg);
 	}
 	
 	/// operators
@@ -245,14 +221,23 @@ class Product {
 	 * @return Product
 	 */
 	public static function byName($name) : Product {
+		$products = Product::$all;
+		$count = count(Product::$all);
+		for($candidate = 0; $candidate < $count; ++$candidate) {
+			if ($products[$candidate]->name === $name) {
+				return $products[$candidate];
+			}
+		}
+		
+		/*
 		foreach(Product::$all as $candidate) {
 			// if($value == $name) {
-				if(strcasecmp($name, $candidate->name) == 0) {// $value) == 0) {
+				if(strcasecmp($name, $candidate->name) === 0) {// $value) == 0) {
 				// if($candidate->name == $name) { // if ($value == '$name') {
 					return $candidate; // if(strcasecmp($name, $value) == 0) {
 				}
 			// }
-		}
+		} */
 	}
 	
 	public static function findProduct($name) {
@@ -278,22 +263,17 @@ class Product {
 	 * Make a specific product the designated product of its type.
 	 * @param int $type
 	 */
-	/* public function designate() {
-		foreach(Product::$all as $candidate) {
-			$type = $candidate->type;
-			Product::$_designated[$type];
-			echo (get_vars(Product::$_designated[]));
-			
-		}
-	} */
 };
 
 // Product::designate(); // Need to run this once elsewhere
 
 Helper::processProductArray();
-
-echo(var_dump($CommandCenter));
-throw_error("Halt");	
+//echo '<pre>'; print_r(Product::$all); echo '</pre>';
+//throw_error("Halt");	
+//Product::designate(Product::$all);
+// echo '<pre>'; print_r(Product::$_designate); echo '</pre>';
+	// echo(var_dump($CommandCenter));
+// throw_error("Halt");	
 
 /// Supply
 //$InfCommandCenter->supplyCapacity		=  7;

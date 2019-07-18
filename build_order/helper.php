@@ -2,229 +2,99 @@
 
 class Helper {
 	
-	// Both decodes and converts
-	// StdClass objects into Product objects
-
 	public function makeProduct($input) {
 		return json_decode($input);
-	//	$temp = json_decode($input);
-	//	$whitelist = ["Product"];
-	//	$temp = serialize($temp);
-	//	$temp = preg_replace('@^O:8:"stdClass":@','O:7:"Product":',$temp);
-
-	//	return (object) unserialize($temp, ['allowed_classes' => $whitelist]);   // Presto a php Class 
 	}
 	
 	public function doesContain($haystack, $needle) {
 		return strpos($haystack, $needle) !== false;
-		// return strpos($haystack, $needle) > -1;
 	}
 	
-	public function toType($input) {
-		$msg = null; 
-		if (Helper::doesContain($input, "Unit")) {
-			$msg = Unit;
-		} elseif (Helper::doesContain($input, "Structure")) {
-			$msg = Structure;
-		} elseif (Helper::doesContain($input, "Upgrade")) {
-			$msg = Upgrade;
-		} elseif (Helper::doesContain($input, "Morph")) {
-			$msg = Morph;
-		}
-		if (Helper::doesContain($input, "Base")) {
-			$msg |= Base;
-		}
-		if (Helper::doesContain($input, "Ability")) {
-			$msg |= Ability;
-		}
-		if (Helper::doesContain($input, "Spellcaster")) {
-			$msg |= Spellcaster;
-		}
-		if (Helper::doesContain($input, "Worker")) {
-			$msg |= Worker;
-		}
-		if (Helper::doesContain($input, "Geyser")) {
-			$msg |= Geyser;
-		} 
-		if (Helper::doesContain($input, "Booster")) {
-			$msg |= Booster;
-		} 
-		if (Helper::doesContain($input, 'Farm')) {
-			$msg |= Farm;
+	public function toType($type) {
+		$type = explode(" | ", $type);
+		$strings = count($type);
+		$msg = null;
+		for($count = 0; $count < $strings; ++$count) {
+			$type[$count] = constant($type[$count]);
+			$msg |= $type[$count];
 		}
 		return $msg;
 	}
 	
 	public function toRace($input) {
-		$msg = null;
-		if ((Strcmp($input, "Terran")) === 0) {
-			$msg = Terran;
-		} elseif ((Strcmp($input, "Zerg")) === 0) {
-			$msg = Zerg;
-		} elseif ((Strcmp($input, "Protoss")) === 0) {
-			$msg = Protoss;
+		switch ($input) {
+			case $input === "Terran":
+				return Terran;
+			case $input === "Zerg":
+				return Zerg;
+			case $input === "Protoss":
+				return Protoss;
+			case $input === "Raynor":
+				return Raynor;
+			case $input === "Kerrigan":
+				return Kerrigan;
+			case $input === "Artanis":
+				return Artanis;
+			case $input === "Swann":
+				return Swann;
+			case $input === "Zagara":
+				return Zagara;
+			case $input === "Vorazun":
+				return Vorazun;
+			case $input === "Karax":
+				return Karax;
+			case $input === "Abathur":
+				return Abathur;
+			case $input === "Alarak":
+				return Alarak;
+			case $input === "Nova":
+				return Nova;
+			case $input === "Stukov":
+				return Stukov;
+			case $input === "Fenix":
+				return Fenix;
+			case $input === "Dehaka":
+				return Dehaka;
+			case $input === "Han&Horner":
+				return Han&Horner;
+			case $input === "Tycus":
+				return Tycus;
+			case $input === "Zeratul":
+				return Zeratul;
+			case $input === "Stetmann":
+				return Stetmann;
 		}
-		return $msg;
 	}
 	
-	public function toCommander($input) {
+	public function sortToArray($input) {
+		if($input == 0) {
+			return array();
+		}
+		$input = explode(" | ", $input);
+		$strings = count($type);
 		$msg = null;
-		if ((Strcmp($input, "Raynor")) === 0) {
-			$msg = Terran;
-		} elseif ((Strcmp($input, "Kerrigan")) === 0) {
-			$msg = Kerrigan;
-		} elseif ((Strcmp($input, "Artanis")) === 0) {
-			$msg = Artanis;
-		} elseif ((Strcmp($input, "Swann")) === 0) {
-			$msg = Swann;
-		} elseif ((Strcmp($input, "Zagara")) === 0) {
-			$msg = Zagara;
-		} elseif ((Strcmp($input, "Vorazun")) === 0) {
-			$msg = Vorazun;
-		} elseif ((Strcmp($input, "Karax")) === 0) {
-			$msg = Karax;
-		} elseif ((Strcmp($input, "Abathur")) === 0) {
-			$msg = Abathur;
-		} elseif ((Strcmp($input, "Alarak")) === 0) {
-			$msg = Alarak;
-		} elseif ((Strcmp($input, "Nova")) === 0) {
-			$msg = Nova;
-		} elseif ((Strcmp($input, "Stukov")) === 0) {
-			$msg = Stukov;
-		} elseif ((Strcmp($input, "Fenix")) === 0) {
-			$msg = Fenix;
-		} elseif ((Strcmp($input, "Dehaka")) === 0) {
-			$msg = Dehaka;
-		} elseif ((Strcmp($input, "Han&Horner")) === 0) {
-			$msg = Han&Horner;
-		} elseif ((Strcmp($input, "Tycus")) === 0) {
-			$msg = Tycus;
-		} elseif ((Strcmp($input, "Zeratul")) === 0) {
-			$msg = Zeratul;
-		} elseif ((Strcmp($input, "Stetmann")) === 0) {
-			$msg = Stetmann;
+		for($count = 0; $count < $strings; ++$count) {
+			$input[$count] = new $input[$count];
+			$msg[] = $input[$count];
 		}
 		return $msg;
+		//$Product::$all[$count][$name] === $json;
 	}
-	
+		
 	public function processProductArray() {
 		global $validTerran; //, $validZerg, $validProtoss;
 		global $validProducts;
 		$validProducts = $validTerran; //array_merge($validTerran, $validZerg, $validProtoss);
-		
-		foreach($validProducts as $newProductname => $newProduct) {//$newProductname => $newProductvariables) {
-			//Helper::makeProduct($newProduct);//($newProductname, $newProductvariables);
-//				$newProduct = new spawnObjects($newProduct)
+		foreach($validProducts as $newProductname => $newProduct) {
 			global ${$newProductname};
-			${$newProductname} = new Product(json_decode($newProduct));	
+			${$newProductname} = new Product(json_decode($newProduct));
 		}
 		
 		echo ("Completed Processing Product Array!" . "\n");
 	}
-	
-	public function processLoop ($array) {
-		$size = count($array);
-		for($product = 1; $product < $size; ++$product) {
-			$newArray += global ${$array[$product]};
-		}
-		return $newArray;
-	}
-	
-	/*
-	public function makeObject(string $Object, array $Array) {
-		// $Object2 = (object) $Array;
-		// Need to check what variables is being assigned to new objects.. see if can assign to Product
-		$Object = new stdClass();
 		
-		$Object->race = $Array['$race'];
-		$Object->commander = $Array['$commander'];
-		$Object->name = $Array['$name'];
-		$Object->type = $Array['$type'];
-		$Object->prerequisites = $Array['$prerequisites'];
-		$Object->expendsAll = false;
-		
-		if(isset($Array['build_time'])) {
-			$Object->time = $Array['$build_time'];
-		}
-		
-		if (isset($Array['$materials'])) {
-			$Object->mineralCost = $Array['$materials']['$minerals'];
-			$Object->gasCost = $Array['$materials']['$gas'];
-		}
-		
-		if ($Object->type && Morph | Unit) {
-			if(isset($Array['$supplyCost'])) {
-				$Object->supplyCost = $Array['$supplyCost'];
-			}
-		}
-		
-		if (($Object->type && Structure) && ($Object->race && Zerg)) {
-			$Object->supplyCost = -1;
-		}		
-		
-		if ($Object->type & Farm) {
-			if(isset($Array['$supplyCapacity'])) {
-				$Object->supplyCapacity = $Array['$supplyCapacity'];
-			}
-		}
-		
-		if ($Object->type && Upgrade | Morph | Unit) {
-			if(isset($Array['$expends'])) {
-				$Object->expends = $Array['$expends'];
-			}
-		}
-		
-		if ($Object->type && Morph) {
-			if(isset($Array['$yeilds'])) {
-				$Object->yeilds = $Array['$yeilds'];
-			}
-		}
-		
-		if($Object->type && Spellcaster) {
-			if(isset($Array['$energyStart'])) {
-				$Object->energyStart = $Array['$energyStart'];
-			}
-			
-			if(isset($Array['$energyMax'])) {
-				$Object->energyMax = $Array['$energyMax'];
-			}
-		}
-		
-		if($Object->type && Ability) {
-			if(isset($Array['$spellCaster'])) {
-				$Object->spellCaster = $Array['$spellCaster'];
-			}
-			
-			if(isset($Array['$energyCost'])) {
-				$Object->energyCost = $Array['$energyCost'];
-			}
-			
-			if(isset($Array['$spellCooldown'])) {
-				$Object->spellCooldown = $Array['$spellCooldown'];
-			}
-		}
-		//		
-		
-		// print_r($Object->name);
-		
-		if($Object->name == null) {
-			print_r($Object);
-			throw_error("Is this " . $Array['$name'] . "?");		
-		}
-		//echo var_dump($Object);
-		return new Product($Object);
-		
-		// $Object = Product();
-		
-	} */
-	
 	public function isRace() {
 		return $this->race & (Protoss | Terran | Zerg);
 	}
-	
-	public function isCommander() {
-		return $this->commander & (Stukov);
-	}
-
 };
 ?>

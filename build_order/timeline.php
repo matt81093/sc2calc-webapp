@@ -444,11 +444,11 @@ class Timeline {
 		// for spawn larvae, delay until a hatchery is vomit-free
 		$productsCreated = $job->productsCreated();
 		if($productsCreated !== null && count($productsCreated) > 0 && $productsCreated[0]->uid == $SpawnLarvae->uid) {
-			if($race == "Stukov") {
-			$job->timeStarted = max($job->timeStarted, $this->infestedccs->whenVomit());				
-			} else {
+		//	if($race == "Stukov") {
+		//	$job->timeStarted = max($job->timeStarted, $this->infestedccs->whenVomit());				
+		//	} else {
 			$job->timeStarted = max($job->timeStarted, $this->hatcheries->whenVomit());
-			}
+		//	}
 		}
 
 		// delay transferring workers to gas until there is room for them

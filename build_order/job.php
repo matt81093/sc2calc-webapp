@@ -654,7 +654,7 @@ class BuildJob extends Job {
 	}
 
 	public function description() {
-		if($this->_product['$type'] & Ability) {
+		if($this->_product->type & Ability) {
 			return "<em>". (string)$this->_product ."</em>";
 		} else {
 			return (string)$this->_product;
@@ -696,24 +696,19 @@ class BuildJob extends Job {
 			$travelTime = $this->timeStarted - $this->timeInitiated;
 
 			// when does worker return
-			if (isset($this->_product->commander)) {
-				switch($this->_product->commander & (Stukov)) {
-					case Stukov:
+			switch($this->_product->race & (Protoss | Terran | Zerg)) {
+				case Protoss:
+					$workerReturns = $this->timeStarted + $travelTime;
+					break;
+				case Terran:
 					$workerReturns = $this->timeCompleted + $travelTime;
 					break;
-				}
-			} else {
-				switch($this->_product->race & (Protoss | Terran | Zerg)) {
-					case Protoss:
-						$workerReturns = $this->timeStarted + $travelTime;
-						break;
-					case Terran:
-						$workerReturns = $this->timeCompleted + $travelTime;
-						break;
-					case Zerg:
-						$workerReturns = INF;
-						break;
-				}
+				case Zerg:
+					$workerReturns = INF;
+					break;
+				case Stukov:
+					$workerReturns = $this->timeCompleted + $travelTime;
+					break;
 			}
 
 			// splice income
@@ -770,10 +765,6 @@ class BuildJob extends Job {
 
 	public function race() {
 		return $this->_product->race();
-	}
-	
-	public function commander() {
-		return $this->_product->commander();
 	}
 
 	public function spellcasterTypeExpended() {

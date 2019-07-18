@@ -7,32 +7,32 @@
 	$TerranStructures = [
 		'CommandCenter' => '{
 			"race": "Terran",
-			"commander": null,
 			"name": "Command Center",
 			"type": "Structure | Base | Farm",
 			"mineralCost": 400,
 			"gasCost": 0,
-			"buildTime": 100,
+			"timeCost": 100,
 			"prerequisites": null,
 			"supplyCapacity": 11
+		}',
+	];
+	
+	$TerranUnits = [
+		'SCV' => '{
+			"race": "Terran",
+			"name": "SCV",
+			"type": "Unit | Worker",
+			"prerequisites": null,
+			"expends": "$CommandCenter | $OrbitalCommand | $PlanetaryFortress",
+			"supplyCost": 1,
+			"mineralCost": 50,
+			"gasCost": 0,
+			"timeCost": 17
 		}'
 	];
 	
 	/*
 	$TerranStructures = [
-		'$CommandCenter' = (object) [
-			'$race' => Terran,
-			'$commander' => null,
-			'$name' => "Command Center",
-			'$type' => Structure | Base | Farm,
-			'$materials' => [
-				'$minerals' => 400, 
-				'$gas' => 0],
-			'$build_time' => 100,
-			'$prerequisites' => [],
-			'$supplyCapacity' => 11,
-		],
-		
 		'$OrbitalCommand' => [
 			'$race' => Terran,
 			'$commander' => null,
@@ -41,7 +41,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => [],
 			'$supplyCapacity' => 11,
 			'$energyStart' => 50,
@@ -56,7 +56,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => [],
 			'$supplyCapacity' => 11,
 		],
@@ -69,7 +69,7 @@
 			'$materials' => [
 				'$minerals' => 100, 
 				'$gas' => 0],
-			'$build_time' => 30,
+			'$timeCost' => 30,
 			'$prerequisites' => ['$CommandCenter'],
 			'$supplyCapacity' => 8,
 		],
@@ -82,7 +82,7 @@
 			'$materials' => [
 				'$minerals' => 75, 
 				'$gas' => 0],
-			'$build_time' => 30,
+			'$timeCost' => 30,
 			'$prerequisites' => ['$CommandCenter'],
 		],
 		
@@ -94,7 +94,7 @@
 			'$materials' => [
 				'$minerals' => 150, 
 				'$gas' => 0],
-			'$build_time' => 65,
+			'$timeCost' => 65,
 			'$prerequisites' => ['$CommandCenter', '$SupplyDepot'],
 		],
 		
@@ -106,7 +106,7 @@
 			'$materials' => [
 				'$minerals' => 150, 
 				'$gas' => 100],
-			'$build_time' => 60,
+			'$timeCost' => 60,
 			'$prerequisites' => [],
 		],
 		
@@ -118,7 +118,7 @@
 			'$materials' => [
 				'$minerals' => 100, 
 				'$gas' => 0],
-			'$build_time' => 40,
+			'$timeCost' => 40,
 			'$prerequisites' => ['$Barracks'],
 		],
 		
@@ -130,7 +130,7 @@
 			'$materials' => [
 				'$minerals' => 100, 
 				'$gas' => 0],
-			'$build_time' => 25,
+			'$timeCost' => 25,
 			'$prerequisites' => ['$EngineeringBay'],
 		],
 		
@@ -142,7 +142,7 @@
 			'$materials' => [
 				'$minerals' => 125, 
 				'$gas' => 100],
-			'$build_time' => 25,
+			'$timeCost' => 25,
 			'$prerequisites' => ['$EngineeringBay'],
 		],
 		
@@ -154,7 +154,7 @@
 			'$materials' => [
 				'$minerals' => 150, 
 				'$gas' => 100],
-			'$build_time' => 60,
+			'$timeCost' => 60,
 			'$prerequisites' => ['$Barracks'],
 		],
 		
@@ -166,7 +166,7 @@
 			'$materials' => [
 				'$minerals' => 150, 
 				'$gas' => 50],
-			'$build_time' => 40,
+			'$timeCost' => 40,
 			'$prerequisites' => ['$Barracks'],
 		],
 		
@@ -178,7 +178,7 @@
 			'$materials' => [
 				'$minerals' => 150, 
 				'$gas' => 100],
-			'$build_time' => 65,
+			'$timeCost' => 65,
 			'$prerequisites' => ['$Factory'],
 		],
 		
@@ -190,7 +190,7 @@
 			'$materials' => [
 				'$minerals' => 150, 
 				'$gas' => 100],
-			'$build_time' => 50,
+			'$timeCost' => 50,
 			'$prerequisites' => ['$Factory'],
 		],
 		
@@ -202,7 +202,7 @@
 			'$materials' => [
 				'$minerals' => 150, 
 				'$gas' => 150],
-			'$build_time' => 50,
+			'$timeCost' => 50,
 			'$prerequisites' => ['$Starport'],
 		],
 		
@@ -216,7 +216,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -228,7 +228,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -240,7 +240,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -252,7 +252,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -264,7 +264,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -276,7 +276,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -288,7 +288,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -300,7 +300,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -312,7 +312,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -324,7 +324,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -336,7 +336,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -348,7 +348,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -360,7 +360,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 		
@@ -372,7 +372,7 @@
 			'$materials' => [
 				'$minerals' => null, 
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$prerequisites' => null,
 		],
 	];
@@ -390,7 +390,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 160,
+			'$timeCost' => 160,
 		],
 		
 		'$InfantryWeaponsLevel2' => [
@@ -403,7 +403,7 @@
 			'$materials' => [
 				'$minerals' => 175,
 				'$gas' => 175],
-			'$build_time' => 190,
+			'$timeCost' => 190,
 		],
 		
 		'$InfantryWeaponsLevel3' => [
@@ -416,7 +416,7 @@
 			'$materials' => [
 				'$minerals' => 250,
 				'$gas' => 250],
-			'$build_time' => 220,
+			'$timeCost' => 220,
 		],
 		
 		'$InfantryArmorLevel1' => [
@@ -429,7 +429,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 160,
+			'$timeCost' => 160,
 		],
 		
 		'$InfantryArmorLevel2' => [
@@ -442,7 +442,7 @@
 			'$materials' => [
 				'$minerals' => 175,
 				'$gas' => 175],
-			'$build_time' => 190,
+			'$timeCost' => 190,
 		],
 		
 		'$InfantryArmorLevel3' => [
@@ -455,7 +455,7 @@
 			'$materials' => [
 				'$minerals' => 250,
 				'$gas' => 250],
-			'$build_time' => 220,
+			'$timeCost' => 220,
 		],
 		
 		'$VehicleWeaponsLevel1' => [
@@ -468,7 +468,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 160,
+			'$timeCost' => 160,
 		],
 		
 		'$VehicleWeaponsLevel2' => [
@@ -481,7 +481,7 @@
 			'$materials' => [
 				'$minerals' => 175,
 				'$gas' => 175],
-			'$build_time' => 190,
+			'$timeCost' => 190,
 		],
 		
 		'$VehicleWeaponsLevel3' => [
@@ -494,7 +494,7 @@
 			'$materials' => [
 				'$minerals' => 250,
 				'$gas' => 250],
-			'$build_time' => 220,
+			'$timeCost' => 220,
 		],
 		
 		'$VehiclePlatingLevel1' => [
@@ -507,7 +507,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 160,
+			'$timeCost' => 160,
 		],
 		
 		'$VehiclePlatingLevel2' => [
@@ -520,7 +520,7 @@
 			'$materials' => [
 				'$minerals' => 175,
 				'$gas' => 175],
-			'$build_time' => 190,
+			'$timeCost' => 190,
 		],
 		
 		'$VehiclePlatingLevel3' => [
@@ -533,7 +533,7 @@
 			'$materials' => [
 				'$minerals' => 250,
 				'$gas' => 250],
-			'$build_time' => 220,
+			'$timeCost' => 220,
 		],
 		
 		'$ShipWeaponsLevel1' => [
@@ -546,7 +546,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 160,
+			'$timeCost' => 160,
 		],
 		
 		'$ShipWeaponsLevel2' => [
@@ -559,7 +559,7 @@
 			'$materials' => [
 				'$minerals' => 175,
 				'$gas' => 175],
-			'$build_time' => 190,
+			'$timeCost' => 190,
 		],
 		
 		'$ShipWeaponsLevel3' => [
@@ -572,7 +572,7 @@
 			'$materials' => [
 				'$minerals' => 250,
 				'$gas' => 250],
-			'$build_time' => 220,
+			'$timeCost' => 220,
 		],
 		
 		'$ShipPlatingLevel1' => [
@@ -585,7 +585,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 160,
+			'$timeCost' => 160,
 		],
 		
 		'$ShipPlatingLevel2' => [
@@ -598,7 +598,7 @@
 			'$materials' => [
 				'$minerals' => 175,
 				'$gas' => 175],
-			'$build_time' => 190,
+			'$timeCost' => 190,
 		],
 		
 		'$ShipPlatingLevel3' => [
@@ -611,7 +611,7 @@
 			'$materials' => [
 				'$minerals' => 250,
 				'$gas' => 250],
-			'$build_time' => 220,
+			'$timeCost' => 220,
 		],
 		
 		'$NitroPacks' => [
@@ -624,7 +624,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 50],
-			'$build_time' => 100,
+			'$timeCost' => 100,
 		],
 		
 		'$HiSecAutoTracking' => [
@@ -637,7 +637,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 80,
+			'$timeCost' => 80,
 		],
 		
 		'$PersonalCloaking' => [
@@ -650,7 +650,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 120,
+			'$timeCost' => 120,
 		],
 		
 		'$CloakingField' => [
@@ -663,7 +663,7 @@
 			'$materials' => [
 				'$minerals' => 200,
 				'$gas' => 200],
-			'$build_time' => 110,
+			'$timeCost' => 110,
 		],
 		
 		'$StrikeCannons' => [
@@ -676,7 +676,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 110,
+			'$timeCost' => 110,
 		],
 		
 		'$SeekerMissile' => [
@@ -689,7 +689,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 110,
+			'$timeCost' => 110,
 		],
 		
 		'$WeaponRefit' => [
@@ -702,7 +702,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 60,
+			'$timeCost' => 60,
 		],
 		
 		'$SiegeTech' => [
@@ -715,7 +715,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 80,
+			'$timeCost' => 80,
 		],
 		
 		'$Stimpack' => [
@@ -728,7 +728,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 170,
+			'$timeCost' => 170,
 		],
 		
 		'$ConcussiveShells' => [
@@ -741,7 +741,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 50],
-			'$build_time' => 60,
+			'$timeCost' => 60,
 		],
 		
 		'$MoebiusReactor' => [
@@ -754,7 +754,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 80,
+			'$timeCost' => 80,
 		],
 		
 		'$CaduceusReactor' => [
@@ -767,7 +767,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 80,
+			'$timeCost' => 80,
 		],
 		
 		'$CorvidReactor' => [
@@ -780,7 +780,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 110,
+			'$timeCost' => 110,
 		],
 		
 		'$BehemothReactor' => [
@@ -793,7 +793,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 80,
+			'$timeCost' => 80,
 		],
 		
 		'$NeosteelFrame' => [
@@ -806,7 +806,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 110,
+			'$timeCost' => 110,
 		],
 		
 		'$BuildingArmor' => [
@@ -819,7 +819,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 140,
+			'$timeCost' => 140,
 		],
 		
 		'$DurableMaterials' => [
@@ -832,7 +832,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 110,
+			'$timeCost' => 110,
 		],
 		
 		'$CombatShield' => [
@@ -845,7 +845,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 110,
+			'$timeCost' => 110,
 		],
 		
 		'$InfernalPreIgniter' => [
@@ -858,7 +858,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 110,
+			'$timeCost' => 110,
 		],
 	];
 	
@@ -877,7 +877,7 @@
 			'$materials' => [
 				'$minerals' => -750,
 				'$gas' => 0,],
-			'$build_time' => 3,
+			'$timeCost' => 3,
 		],
 		
 		'$MorphToOrbitalCommand' => [
@@ -892,7 +892,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 0,],
-			'$build_time' => 35,
+			'$timeCost' => 35,
 		],
 		
 		'$MorphToPlanetaryFortress' => [
@@ -907,7 +907,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 150],
-			'$build_time' => 50,
+			'$timeCost' => 50,
 		],
 		
 		'$BuildReactorOnBarracks' => [
@@ -922,7 +922,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 50],
-			'$build_time' => 50,
+			'$timeCost' => 50,
 		],
 		
 		'$BuildTechLabOnBarracks' => [
@@ -937,7 +937,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 25],
-			'$build_time' => 25,
+			'$timeCost' => 25,
 		],
 		
 		'$BuildReactorOnFactory' => [
@@ -952,7 +952,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 50],
-			'$build_time' => 50,
+			'$timeCost' => 50,
 		],
 		
 		'$BuildTechLabOnFactory' => [
@@ -967,7 +967,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 25],
-			'$build_time' => 25,
+			'$timeCost' => 25,
 		],
 		
 		'$BuildReactorOnStarport' => [
@@ -982,7 +982,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 50],
-			'$build_time' => 50,
+			'$timeCost' => 50,
 		],
 		
 		'$BuildTechLabOnStarport' => [
@@ -997,7 +997,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 25],
-			'$build_time' => 25,
+			'$timeCost' => 25,
 		],
 		
 		'$SwapReactorOnBarracksToFactory' => [
@@ -1012,7 +1012,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnBarracksToStarport' => [
@@ -1027,7 +1027,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnFactoryToBarracks' => [
@@ -1042,7 +1042,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnFactoryToStarport' => [
@@ -1057,7 +1057,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnStarportToBarracks' => [
@@ -1072,7 +1072,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnStarportToFactory' => [
@@ -1087,7 +1087,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnBarracksToFactory' => [
@@ -1102,7 +1102,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnBarracksToStarport' => [
@@ -1117,7 +1117,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnFactoryToBarracks' => [
@@ -1132,7 +1132,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnFactoryToStarport' => [
@@ -1147,7 +1147,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnStarportToBarracks' => [
@@ -1162,7 +1162,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnStarportToFactory' => [
@@ -1177,7 +1177,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnBarracksWithTechLabFactory' => [
@@ -1192,7 +1192,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnBarracksWithTechLabStarport' => [
@@ -1207,7 +1207,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		'$SwapReactorOnFactoryWithTechLabBarracks' => [
 			'$race' => Terran,
@@ -1221,7 +1221,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnFactoryWithTechLabStarport' => [
@@ -1236,7 +1236,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnStarportWithTechLabBarracks' => [
@@ -1251,7 +1251,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapReactorOnStarportWithTechLabFactory' => [
@@ -1266,7 +1266,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnBarracksWithReactorFactory' => [
@@ -1281,7 +1281,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnBarracksWithReactorStarport' => [
@@ -1296,7 +1296,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnFactoryWithReactorBarracks' => [
@@ -1311,7 +1311,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnFactoryWithReactorStarport' => [
@@ -1326,7 +1326,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnStarportWithReactorBarracks' => [
@@ -1341,7 +1341,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 		
 		'$SwapTechLabOnStarportWithReactorFactory' => [
@@ -1356,7 +1356,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => ADDON_SWAP_TIME,
+			'$timeCost' => ADDON_SWAP_TIME,
 		],
 	];
 		
@@ -1374,7 +1374,7 @@
 			'$materials' => [
 				'$minerals' => null,
 				'$gas' => null],
-			'$build_time' => null,
+			'$timeCost' => null,
 			'$expends' => false,
 		],
 		
@@ -1389,7 +1389,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 0],
-			'$build_time' => 17,
+			'$timeCost' => 17,
 		],
 		
 		'$Marine' => [
@@ -1403,7 +1403,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 0],
-			'$build_time' => 25,
+			'$timeCost' => 25,
 		],
 		
 		'$Marauder' => [
@@ -1417,7 +1417,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 25],
-			'$build_time' => 30,
+			'$timeCost' => 30,
 		],
 		
 		'$Reaper' => [
@@ -1431,7 +1431,7 @@
 			'$materials' => [
 				'$minerals' => 50,
 				'$gas' => 50],
-			'$build_time' => 45,
+			'$timeCost' => 45,
 		],
 		
 		'$Ghost' => [
@@ -1445,7 +1445,7 @@
 			'$materials' => [
 				'$minerals' => 200,
 				'$gas' => 100],
-			'$build_time' => 40,
+			'$timeCost' => 40,
 		],
 		
 		'$Hellion' => [
@@ -1459,7 +1459,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 0],
-			'$build_time' => 30,
+			'$timeCost' => 30,
 		],
 		
 		'$SiegeTank' => [
@@ -1473,7 +1473,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 125],
-			'$build_time' => 45,
+			'$timeCost' => 45,
 		],
 		
 		'$Thor' => [
@@ -1487,7 +1487,7 @@
 			'$materials' => [
 				'$minerals' => 300,
 				'$gas' => 200],
-			'$build_time' => 60,
+			'$timeCost' => 60,
 		],
 		
 		'$Viking' => [
@@ -1501,7 +1501,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 75],
-			'$build_time' => 42,
+			'$timeCost' => 42,
 		],
 		
 		'$Medivac' => [
@@ -1515,7 +1515,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 42,
+			'$timeCost' => 42,
 		],
 		
 		'$Banshee' => [
@@ -1529,7 +1529,7 @@
 			'$materials' => [
 				'$minerals' => 150,
 				'$gas' => 100],
-			'$build_time' => 60,
+			'$timeCost' => 60,
 		],
 		
 		'$Raven' => [
@@ -1543,7 +1543,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 200],
-			'$build_time' => 60,
+			'$timeCost' => 60,
 		],
 		
 		'$Battlecruiser' => [
@@ -1557,7 +1557,7 @@
 			'$materials' => [
 				'$minerals' => 400,
 				'$gas' => 300],
-			'$build_time' => 90,
+			'$timeCost' => 90,
 		],
 		
 		'$TacticalNuke' => [
@@ -1571,7 +1571,7 @@
 			'$materials' => [
 				'$minerals' => 100,
 				'$gas' => 100],
-			'$build_time' => 60,
+			'$timeCost' => 60,
 		],
 	];
 	
@@ -1610,7 +1610,6 @@
 			'$spellCooldown' => 12,
 		],
 	];
-	$validTerran = array_merge($TerranStructures, $TerranUnits, $TerranUpgrades, $TerranAbilities, $TerranMorphs);
 	*/
-	$validTerran = $TerranStructures;
-?>
+	$validTerran = array_merge($TerranStructures, $TerranUnits); // $TerranUpgrades, $TerranAbilities, $TerranMorphs);
+	
