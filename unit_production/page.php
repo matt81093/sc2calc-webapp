@@ -1,7 +1,7 @@
 <?php
 require("include.php");
 
-require("../page.php");
+require("../index.html");
 require("incomeSnippet.php");
 
 abstract class UnitProductionPage extends Page {

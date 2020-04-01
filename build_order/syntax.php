@@ -1,6 +1,6 @@
 <?php
 require("include.php");
-require("../page.php");
+require("../index.html");
 
 class SyntaxPage extends Page {
 

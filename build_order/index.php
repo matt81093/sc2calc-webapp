@@ -22,7 +22,7 @@
  */
 
 require("include.php");
-require("../page.php");
+require("../index.html");
 
 /**
  * Render the build order page.

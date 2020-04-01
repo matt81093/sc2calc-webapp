@@ -1,5 +1,5 @@
 <?php
-require("page.php");
+require("index.html");
 
 class StukovUnitProductionPage extends UnitProductionPage {
 	
