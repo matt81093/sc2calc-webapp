@@ -1,284 +1,297 @@
-<SCRIPT type="text/javascript">
+/*jshint unused: true, node: true */
+/*jslint unparam: true, node: true */
 
-require './product defines.php';
-require './commanders/terran.php';
-require './commanders/zerg.php';
-require './commanders/protoss.php';
+// import * from './product defines.js';
+// import * from './commanders.js'
+// module.exports = new Foo();
 
-/**
- * Products are structures, units, upgrades, morphs, addons, addon swaps,
- * abilities, etc. Basically, anything that is buildable in the game.
- */
-class Product {
+var races, t_factions, z_factions, p_factions, classes;
+var $_designated, $all, $last_uid, $uid, $name, $type, $faction, $leader, $mineralCost, $gasCost, $larvaCost, $supplyCost, $supplyCapacity, $energyCost, $energyMax, $energyStart, $spellCaster, $spellCooldown, $timeCost, $prerequisites, $yeilds, $expends, $expendsAll, $exposed, $race;
+var terran, zerg, protoss;
 
-	private static $_designated = array();
-	// @var array | List of designated products for specific types.
+// Races = Terran, Zerg, Protoss
+// Specific racial faction arrays
+// Array defining class objects
 
-	public static $all = array();
-	// @var array | List of all exposed products.
+t_factions = ["raynor"];
+z_factions = ["stukov"];
+p_factions = ["artanis"];
+classes = ["unit", "structure", "upgrade", "morph", "ability", "spellcaster", "base"];
 
-	private static $last_uid = 0;
-	// @var int | Last unique identifier created.
+// Set-up groundwork for our Products
+// Array.forEach( function(current_value, index, initial_array) {}, this_context )
 
-	public $exposed = true;
-	// @var bool | Decides whether to show this product in build log.
+function constructFactionFoundation() {
+    "use strict";
+    terran = {}; // Terran Foundation
+    terran.base = {}; // Let's construct our base terran faction with object classes
+    classes.forEach(function (element, i) {
+        terran.base[classes[i]] = {};
+    }); // Now for the Terran Commanders
+    t_factions.forEach(function (element, i) {
+        terran[t_factions[i]] = {};
+        classes.forEach(function (element, j) {
+            terran[t_factions[i]][classes[j]] = {};
+        });
+    });
+    zerg = {}; // Zerg Foundation
+    zerg.base = {}; // Let's construct our base Zerg faction with object classes
+    classes.forEach(function (element, i) {
+        zerg.base[classes[i]] = {};
+    }); // Now for the Zerg Commanders
+    z_factions.forEach(function (element, i) {
+        zerg[z_factions[i]] = {};
+        classes.forEach(function (element, j) {
+            zerg[z_factions[i]][classes[j]] = {};
+        });
+    });
+    protoss = {}; // Protoss Foundation
+    protoss.base = {}; // Let's construct our base Protoss faction with object classes
+    classes.forEach(function (element, i) {
+        protoss.base[classes[i]] = {};
+    }); // Now for the Protoss Commanders
+    p_factions.forEach(function (element, i) {
+        protoss[p_factions[i]] = {};
+        classes.forEach(function (element, j) {
+            protoss[p_factions[i]][classes[j]] = {};
+        });
+    });
+}
 
-	public $energyCost = 0.0;
-	// @var float | Energy cost of this product.
+function Product() {
+    "use strict";
 
-	public $energyMax = 0.0;
-	// @ var float | Maximum energy on this spellcaster.
+    $_designated = []; // @let array | List of designated products for specific types.
+    $all = []; // @let array | List of all exposed products.
+    $last_uid = 0; // @let int | Last unique identifier created.
+    $uid = null; // @let int | Unique identifier of this product.
+    $name = "Placeholder"; // @let string | Name of this product.
+    $type = 0;  // @let int | Type of this product.
+    $faction = 0; //@let int | Faction of this product.
+    $leader = "Base"; //@let int | Commander of this product.
+    $mineralCost = 0.0; // @let float | Mineral cost of this product.
+    $gasCost = 0.0; // @let float | Gas cost of this product.
+    $larvaCost = 0; // @let int | Larva cost of this product.
+    $supplyCost = 0; // @let int | Supply cost of this product.
+    $supplyCapacity = 0; // @let int | Supply capacity provided by this product.
+    $energyCost = 0.0; // @let float | Energy cost of this product.
+    $energyMax = 0.0; // @ let float | Maximum energy on this spellcaster.
+    $energyStart = 0.0; // @let float | Initial energy on this spellcaster.
+    $spellCaster = [];  // @let Array of Product | Type of spellcaster needed to use this ability.
+    $spellCooldown = 0; // @let int | Time until Ability can be used again.
+    $timeCost = 0.0; // @let float | Time it takes to complete this product.
+    $prerequisites = []; // @let array | Prerequisite structures or upgrades to build this product.
+    $yeilds = []; // @let array | For a morph, a list of products that are yielded by the morph.
+    $expends = []; // @let array | Production queues expended to build this product.
+    $expendsAll = false; // @let bool | If true, all production queues are required; if false, only one of them.
+    $exposed = true; // @let bool | Decides whether to show this product in build log.
+}
 
-	public $energyStart = 0.0;
-	// @var float | Initial energy on this spellcaster.
+    /* constructor(name, type, prerequisites, expends, supplyCost, mineralCost, gasCost, timeCost, exposed = true) {
+    this.name = name;
+    this.type = type;
+    this.prerequisites = prerequisites;
+    this.expends = expends;
+    this.expendsAll = false;
+    this.mineralCost = mineralCost;
+    this.gasCost = gasCost;
+    this.timeCost = timeCost;
+    this.supplyCost = supplyCost;
+} */
 
-	public $expends = array();
-	// @var array | Production queues expended to build this product.
+// Type checking and assigning values.
+// for loop with switches? can test out and keep
+// unknown if I can move this to function
 
-	public $expendsAll = false;
-	// @var bool | If true, all production queues are required; if false, only one of them.
+/* types = explode(" | ", Product->type);
+count = count(types);
+for(strings = 0; strings < count; ++strings) {
+  type = types[strings]; */
+  // unset(types); unset(count);
+  // set uid & append to all
+  /* this.uid = last_uid++;
+  if(exposed) {
+  all[] = this; */
 
-	public $mineralCost = 0.0;
-	// @var float | Mineral cost of this product.
 
-	public $gasCost = 0.0;
-	// @var float | Gas cost of this product.
+class Terran extends Product {
+  constructor() {
+    this.$faction = TERRAN;
+  }
+}
 
-	public $larvaCost = 0;
-	// @var int | Larva cost of this product.
+class Zerg extends Product {
+  constructor() {
+    this.$faction = ZERG;
+  }
+}
 
-	public $name = "Placeholder";
-	// @var string | Name of this product.
+class Protoss extends Product {
+  constructor() {
+    this.$faction = PROTOSS;
+  }
+}
 
-	public $prerequisites = array();
-	// @var array | Prerequisite structures or upgrades to build this product.
+class Unit extends Product {
+  constructor() {
+    this.$type = $type |= UNIT;
+    this.$supplyCost = $supplyCost;
+    this.$faction & ZERG ? this.$larvaCost = 1 : 0;
+    this.$expends = $expends;
+  }
+}
 
-	public $spellcaster = array();
-	// @var Array of Product | Type of spellcaster needed to use this ability.
+class Structure extends Product {
+  constructor() {
+    this.$type = $type |= STRUCTURE;
+    this.$faction & ZERG ? this.$supplyCost = -1 : null;
+  }
+}
 
-	public $supplyCapacity = 0;
-	// @var int | Supply capacity provided by this product.
+class Upgrade extends Product {
+  constructor() {
+    this.$type |= UPGRADE;
+    this.$expends = $expends;
+  }
+}
 
-	public $supplyCost = 0;
-	// @var int | Supply cost of this product.
+class Morph extends Product {
+  constructor(yields) {
+    this.$type |= MORPH;
+    this.$yields = $yields;
+    this.$expends = $expends;
+    this.$supplyCost = $supplyCost;
+    this.$expendsAll = true;
+  }
+}
 
-	public $spellCooldown = 0;
-	// @var int | Time until Ability can be used again.
+class Ability extends Product {
+  constructor(spellCaster, energyCost) {
+    this.$type |= ABILITY;
+    this.$energyCost = $energyCost;
+    this.$spellCaster = $spellCaster;
+    this.$spellCooldown = $spellCooldown;
+  }
+}
 
-	public $timeCost = 0.0;
-	// @var float | Time it takes to complete this product.
+class Spellcaster extends Product {
+  constructor() {
+    this.$type |= SPELLCASTER;
+    this.$energyStart = $energyStart;
+    this.$energyMax = $energyMax;
+  }
+}
 
-	public $race = 0;
-	//@var int | Race of this product.
+class Hq extends Product {
+  constructor() {
+    this.$type |= HQ;
+    $_designated[HQ] = &this;
+  }
+}
 
-	public $type = 0;
-	// @var int | Type of this product.
+class Worker extends Product {
+  constructor() {
+    this.$type |= WORKER;
+    $_designated[WORKER] = &this;
+  }
+}
 
-	public $uid;
-	// @var int | Unique identifier of this product.
+class Geyser extends Product {
+  constructor() {
+    this.$type |= GEYSER;
+    $_designated[GEYSER] = &this;
+  }
+}
 
-	public $yeilds = array();
-	// @var array | For a morph, a list of products that are yielded by the morph.
+class Booster extends Product {
+  constructor() {
+    this.$type |= BOOSTER;
+    $_designated[BOOSTER] = &this;
+  }
+}
 
-	/** /// constructor
-	 * Create a new product.
-	 * @param string $name
-	 * @param int $type
-	 * @param array $prerequisites
-	 * @param array $expends
-	 * @param int $supplyCost
-	 * @param float $mineralCost
-	 * @param float $gasCost
-	 * @param float $timeCost
-	 * @param bool $exposed
-	 */
-
-	public function __construct($Product, $exposed = true) {
-
-		if (empty($Product)) {
-			throw_error("Attempted to construct empty object.");
-		} else {
-			$this->race = (Helper::toRace($Product->race));
-			$this->name = $Product->name;
-			$this->prerequisites = (Helper::sortToArray($Product->prerequisites));
-			$this->timeCost = $Product->timeCost;
-			$this->mineralCost = $Product->mineralCost;
-			$this->gasCost = $Product->gasCost;
-			$expendsAll = false;
-
-			// Type checking and assigning values.
-			// for loop with switches? can test out and keep
-			// unknown if I can move this to function
-
-			$types = explode(" | ", $Product->type);
-			$count = count($types);
-			for($strings = 0; $strings < $count; ++$strings) {
-				$type = $types[$strings];
-				switch ($type) {
-					case $type === "Unit":
-						$this->type |= Unit;
-						$this->expends = (Helper::sortToArray($Product->expends));
-						$this->supplyCost = $Product->supplyCost;
-						$this->race & Zerg ? $this->larvaCost = 1 : 0;
-						continue;
-					case $type === "Structure":
-						$this->type |= Structure;
-						$this->race & Zerg ? $this->supplyCost = -1 : null;
-						continue;
-					case $type === "Upgrade":
-						$this->type |= Upgrade;
-						$this->expends = (Helper::sortToArray($Product->expends));
-						continue;
-					case $type === "Morph":
-						$this->type |= Morph;
-						$this->expends = (Helper::sortToArray($Product->expends));
-						$this->supplyCost = $Product->supplyCost;
-						$this->yeilds = (Helper::sortToArray($Product->yeilds));
-						$this->expendsAll = true;
-						continue;
-					case $type === "Ability":
-						$this->type |= Ability;
-						$this->spellCaster = (Helper::sortToArray($Product->spellCaster));
-						$this->energyCost = $Product->energyCost;
-						$this->spellCooldown = $Product->spellCooldown;
-						continue;
-					case $type === "Spellcaster":
-						$this->type |= Spellcaster;
-						$this->energyStart = $Product->energyStart;
-						$this->energyMax = $Product->energyMax;
-						continue;
-					// Special types
-					case $type === "Base":
-						$this->type |= Base;
-						$_setType = Base | $this->race;
-						Product::$_designated[$_setType] = &$this;
-						unset($_setType); continue;
-					case $type === "Worker":
-						$this->type |= Worker;
-						$_setType = Worker | $this->race;
-						Product::$_designated[$_setType] = &$this;
-						continue;
-					case $type === "Geyser":
-						$this->type |= Geyser;
-						$_setType = Geyser | $this->race;
-						Product::$_designated[$_setType] = &$this;
-						continue;
-					case $type === "Booster":
-						$this->type |= Booster;
-						$_setType = Booster | $this->race;
-						Product::$_designated[$_setType] = &$this;
-						continue;
-					case $type === "Farm":
-						$this->type |= Farm;
-						// $_designated[$type] = $this;
-						$this->supplyCapacity = $Product->supplyCapacity;
-						continue;
-				}
-			}
-			unset($types); unset($count);
-
-			// $this->larvaCost = (($this->race & Zerg) && ($this->type & Unit)) ? 1 : 0;
-
-			// set uid & append to all
-			$this->uid = Product::$last_uid++;
-			if($exposed) {
-				Product::$all[] = $this;
-			}
-		}
-	}
-
+class Farm extends Product {
+  constructor() {
+    this.$type |= FARM;
+    // _designated[type] = this;
+    this.$supplyCapacity = $supplyCapacity;
+  }
+}
 	/**
 	 * When a product is unset
 	 */
-	public function drop() {
-		foreach(Product::$all as &$candidate) {
-			if($this->uid == $candidate->uid) {
-				unset($candidate);
-				break;
-			}
+function drop() {
+	forEach(all as &candidate) {
+		if(this.$uid == candidate.$uid) {
+			unset(candidate);
+			break;
 		}
 	}
+}
 
-	public function race() {
-		return $this->race & (Protoss | Terran | Zerg);
-	}
+function faction() {
+	return this->faction & (Protoss | Terran | Zerg);
+}
 
-	/// operators
+/// operators
 
-	/**
-	 * Convert to a string.
-	 * @return string
-	 */
-	public function __toString() {
-		return isset($this->name) ? $this->name : "n/a";
-	}
+/**
+ * Convert to a string.
+ * @return string
+ */
+public function __toString() {
+	return isset(this->name) ? this->name : "n/a";
+}
 
-	/// public static methods
+/// public static methods
 
-	/**
-	 * Find exposed product by name.
-	 * @param string $name
-	 * @return Product
-	 */
-	public static function byName($name) : Product {
-		$products = Product::$all;
-		$count = count(Product::$all);
-		for($candidate = 0; $candidate < $count; ++$candidate) {
-			if ($products[$candidate]->name === $name) {
-				return $products[$candidate];
-			}
+/**
+ * Find exposed product by name.
+ * @param string name
+ * @return Product
+ */
+
+function byName(name) {
+	products = $all;
+	count = $all.length;
+	for(candidate = 0; candidate < count; ++candidate) {
+		if (products[candidate]->name === name) {
+			return products[candidate];
 		}
-
+	}
+}
 		/*
-		foreach(Product::$all as $candidate) {
-			// if($value == $name) {
-				if(strcasecmp($name, $candidate->name) === 0) {// $value) == 0) {
-				// if($candidate->name == $name) { // if ($value == '$name') {
-					return $candidate; // if(strcasecmp($name, $value) == 0) {
+		forEach(Product::all as candidate) {
+			// if(value == name) {
+				if(strcasecmp(name, candidate->name) === 0) {// value) == 0) {
+				// if(candidate->name == name) { // if (value == 'name') {
+					return candidate; // if(strcasecmp(name, value) == 0) {
 				}
 			// }
 		} */
-	}
 
-	public static function findProduct($name) {
-		foreach(Product::$all as $candidate) {
-			if(strcasecmp($name, $candidate->name) == 0) {
-				return $candidate;
-			}
+function findProduct(name) {
+	forEach($all as candidate) {
+		if(strcasecmp(name, candidate.$name) == 0) {
+			return candidate;
 		}
 	}
+}
 
 	/**
 	 * Get designated product of given type.
-	 * @param int $type
+	 * @param int type
 	 * @return Product
 	 */
-	public static function designated($type) {
-		return Product::$_designated[$type];
-	}
+function designated(type) {
+	return $_designated[type];
+}
 
 	/// public methods
 
 	/**
 	 * Make a specific product the designated product of its type.
-	 * @param int $type
+	 * @param int type
 	 */
-};
-
-// Product::designate(); // Need to run this once elsewhere
-
-Helper::processProductArray();
-//echo '<pre>'; print_r(Product::$all); echo '</pre>';
-//throw_error("Halt");
-//Product::designate(Product::$all);
-// echo '<pre>'; print_r(Product::$_designate); echo '</pre>';
-	// echo(var_dump($CommandCenter));
-// throw_error("Halt");
-
-/// Supply
-//$InfCommandCenter->supplyCapacity		=  7;
-//$InfOverlord->supplyCapacity			=  8;
-//$InfOverseer->supplyCapacity			=  8;
 
 // Patch 1.4.2
-?>
