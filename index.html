@@ -2,15 +2,15 @@
 <html lang="nl">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8">
-	<title><?php echo $this->getTitle(); ?> - StarCraft 2</title>
-	<link rel="stylesheet" type="text/css" href="<?php echo $pathToRoot; ?>style.css"/>
+	<title>StarCraft 2</title>
+	<link rel="stylesheet" type="text/css" href="./style.css"/>
 	<link rel="icon" href="http://image.sc2calc.org/favicon.ico" type="image/x-icon"/>
-	<script type="text/javascript" src="<?php echo $pathToRoot; ?>jquery.js"></script>
-	<script type="text/javascript" src="<?php echo $pathToRoot; ?>jquery.effects.core.js"></script>
-	<script type="text/javascript" src="<?php echo $pathToRoot; ?>jquery.effects.highlight.js"></script>
-	<script type="text/javascript" src="<?php echo $pathToRoot; ?>jquery.corner.js"></script>
-	<script type="text/javascript" src="<?php echo $pathToRoot; ?>jquery.ezpz.js"></script>
-	<script type="text/javascript"><!--
+	<script type="text/javascript" src="./jquery.js"></script>
+	<script type="text/javascript" src="./jquery.effects.core.js"></script>
+	<script type="text/javascript" src="./jquery.effects.highlight.js"></script>
+	<script type="text/javascript" src="./jquery.corner.js"></script>
+	<script type="text/javascript" src="./jquery.ezpz.js"></script>
+	<script type="text/javascript">
 		$(function() {
 			// collapsibles
 			$("fieldset > legend").click(function() {
@@ -26,40 +26,34 @@
 				});
 			});
 		});
-	//--></script>
-	<script type="text/javascript"><!--
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-18765033-1']);
-		_gaq.push(['_trackPageview']);
-
-		(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();
-	//--></script>
+</script>
 </head>
 <body>
-	<a href="http://sc2calc.org/" class="banner">
-		<h1><?php echo $this->getTitle(); ?></h1>
+    <!-- ** http://sc2calc.org/ ** -->
+	<a href="https://matt81093.github.io/sc2calc.org/" class="banner">
+		<h1>Build Order Calculator</h1>
 	</a>
 	<div class="menu">
 		<table id="menu">
 			<tr>
 				<td style="width: 120px;" class="group">
-					<a href="<?php echo $pathToRoot; ?>build_order/">Build order <img src="http://image.sc2calc.org/arrow_right.gif"/></a>
+					<a href="./build_order/">Build order <img src="http://image.sc2calc.org/arrow_right.gif"/></a>
 				</td>
 				<td class="group">
 					<div class="unfold" style="width: 120px;">
-						<a href="<?php echo $pathToRoot; ?>unit_production/">Unit production <img src="http://image.sc2calc.org/arrow_right.gif"/></a>
-						<a class="race" href="<?php echo $pathToRoot; ?>unit_production/protoss.php"><img src="http://image.sc2calc.org/protoss.png"/> Protoss</a>
-						<a class="race" href="<?php echo $pathToRoot; ?>unit_production/terran.php"><img src="http://image.sc2calc.org/terran.png"/> Terran</a>
-						<a class="race" href="<?php echo $pathToRoot; ?>unit_production/zerg.php"><img src="http://image.sc2calc.org/zerg.png"/> Zerg</a>
+						<a href="./unit_production/">
+                            <img src="http://image.sc2calc.org/arrow_right.gif"/> Unit production</a>
+						<a class="race" href="./unit_production/protoss.php">
+                            <img src="http://image.sc2calc.org/protoss.png"/> Protoss</a>
+						<a class="race" href="./unit_production/terran.php">
+                            <img src="http://image.sc2calc.org/terran.png"/> Terran</a>
+						<a class="race" href="./unit_production/zerg.php">
+                            <img src="http://image.sc2calc.org/zerg.png"/> Zerg</a>
 					</div>
 				</td>
 				<td>&nbsp;</td>
 				<td style="width: 90px;">
-					<a class="race" href="<?php echo $pathToRoot; ?>faq.php"><img src="http://image.sc2calc.org/faq.png"/> FAQ</a>
+					<a class="race" href="./faq.html"><img src="http://image.sc2calc.org/faq.png"/> FAQ</a>
 				</td>
 			</tr>
 		</table>
@@ -71,7 +65,7 @@
 			<li>&copy; 2010 Jasper A. Visser</li>
 		</ul>
 		<ul>
-			<li><a href="<?php echo $pathToRoot; ?>about.php">About</a></li>
+			<li><a href="./about.php">About</a></li>
 			<li><a href="http://www.teamliquid.net/mytlnet/index.php?view=new&to=Haploid" target="_blank">Contact</a></li>
 		</ul>
 	</div>
