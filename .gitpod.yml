@@ -1,6 +1,29 @@
 tasks:
-  - init: echo "Replace me with a build script for the project."
-    command: echo "Replace me with something that should run on every start, or just
-      remove me entirely."
+  - name: Dependencies
+    before: echo "Setting up dev enviroment."
+    init: |
+      npm install
+      npm init astro
+      npm install -D tailwindcss@latest postcss@latest autoprefixer@latest
+    command: echo "Done!"
 image:
   file: .gitpod.Dockerfile
+vscode:
+  extensions:
+  # QoL
+  - CoenraadS.bracket-pair-colorizer-2
+  - jerrygoyal.shortcut-menu-bar
+  - EditorConfig.EditorConfig
+  - ms-vscode.sublime-keybindings
+  - dbaeumer.vscode-eslint
+  - HookyQR.beautify
+  - esbenp.prettier-vscode
+  - oouo-diogo-perdigao.docthis
+  - eamodio.gitlens
+  - GitHub.vscode-pull-request-github
+  # Dev
+  - ms-azuretools.vscode-docker
+  - bradlc.vscode-tailwindcss
+  # - DotJoshJohnson.xml
+  # - svelte.svelte-vscode
+  # - address.vsix
