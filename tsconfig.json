@@ -1,0 +1,11 @@
+{
+  "moduleResolution": "node",
+	"compilerOptions": {
+		"module": "commonjs"
+	},
+	"files": [
+		"./src/components/typescript.ts"
+	],
+	"include": ["src/components/*"],
+	"exclude": ["node_modules", "old", ".github", "public", "**/*.spec.ts"]
+}

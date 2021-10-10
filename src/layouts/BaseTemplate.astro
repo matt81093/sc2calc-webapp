@@ -1,0 +1,34 @@
+---
+// src/layouts/BaseTemplate.astro
+import BaseHead from "./BaseHead.astro";
+import BaseFooter from "./BaseFooter.astro";
+---
+<html>
+	<BaseHead title="Template">
+		<title></title>
+		<style>
+			header {
+			display: flex;
+			flex-direction: column;
+			gap: 1em;
+			max-width: min(100%, 68ch);
+			}
+		</style>
+	</BaseHead>
+  <head>
+    <title>Example Layout: {title}</title>
+  </head>
+  <body>
+    <!-- Adds a navigation bar to every page. -->
+    <nav>
+      <a href="#">Build_Order</a>
+      <a href="#">Unit_Production</a>
+	      <a href="#">Terran</a>
+	      <a href="#">Zerg</a>
+	      <a href="#">Protoss</a>
+    </nav>
+    <!-- slot: your page content will be injected here. -->
+    <slot />
+	<BaseFooter />
+  </body>
+</html>

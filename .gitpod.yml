@@ -3,8 +3,8 @@ tasks:
     before: echo "Setting up dev enviroment."
     init: |
       npm install
-      npm init astro
-      npm install -D tailwindcss@latest postcss@latest autoprefixer@latest
+    # npm install -D tailwindcss@latest postcss@latest autoprefixer@latest
+    # npm run dev
     command: echo "Done!"
 image:
   file: .gitpod.Dockerfile
@@ -21,9 +21,12 @@ vscode:
   - oouo-diogo-perdigao.docthis
   - eamodio.gitlens
   - GitHub.vscode-pull-request-github
+  - eg2.vscode-npm-script
   # Dev
-  - ms-azuretools.vscode-docker
+  - svelte.svelte-vscode
+  - https://marketplace.visualstudio.com/_apis/public/gallery/publishers/astro-build/vsextensions/astro-vscode/0.7.7/vspackage
   - bradlc.vscode-tailwindcss
+  - gencer.html-slim-scss-css-class-completion
+  - ms-azuretools.vscode-docker
   # - DotJoshJohnson.xml
-  # - svelte.svelte-vscode
   # - address.vsix

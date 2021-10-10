@@ -20,7 +20,7 @@ table.display thead th {
 table.display thead th.sorting_asc {
 	background: url(http://image.sc2calc.org/th-highlight.png) repeat-x top;
 }
- 
+
 table.display thead th.sorting_desc {
 	background: url(http://image.sc2calc.org/th-highlight.png) repeat-x top;
 }
@@ -28,13 +28,13 @@ table.display thead th.sorting_desc {
 /* Row */
 table.display tr.odd {
 	background-color: white;
-} 
+}
 table.display tr.even {
 	background-color: #edf5ff;
 }
 table.display tr.odd td.sorting_1 {
 	background-color: #edf5ff;
-} 
+}
 table.display tr.even td.sorting_1 {
 	background-color: #dbeaff;
 }
